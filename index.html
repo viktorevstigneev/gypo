@@ -243,12 +243,13 @@
             const z = medalBody.position.z;
             console.log("z: ", z);
 
-            text.textContent = ` beta = ${
-              beta / 1000
-            }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
+            text.textContent = ` beta = ${beta}, calculateZpos(beta, z) = ${calculateZpos(
+              beta,
+              z
+            )}`;
             console.log("text: ", text);
 
-            medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
+            medalBody.position.set(x + gamma / 1000, y, (beta / Math.PI) * 25);
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

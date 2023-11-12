@@ -217,51 +217,40 @@
           const calculateZpos = (beta, z) => {
             let result;
             if (beta < 0.09) {
-              result = z + beta - 0.025 / 1000;
+              result = z - beta  / 1000;
             }
             if (beta > 0.09) {
               result = z + beta / 1000;
+            }
+
+            if (beta > 0 && beta < 0.085) {
+              result = 0;
             }
 
             return result;
           };
 
           window.addEventListener("deviceorientation", (event) => {
-            // var beta = Math.floor(event.beta); // Угол наклона по оси X
-            // console.log("beta: ", beta); ///zzzzzzzzzzz
+            var beta = Math.floor(event.beta); // Угол наклона по оси X
+            console.log("beta: ", beta); ///zzzzzzzzzzz
 
-            // var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
-            // console.log("gamma: ", gamma);
+            var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
+            console.log("gamma: ", gamma);
 
-            // var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-            // console.log("alpha: ", alpha);
+            var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
+            console.log("alpha: ", alpha);
 
-            // const x = medalBody.position.x;
-            // console.log('x: ', x);
-            // const y = medalBody.position.y;
-            // const z = medalBody.position.z;
+            const x = medalBody.position.x;
+            console.log("x: ", x);
+            const y = medalBody.position.y;
+            const z = medalBody.position.z;
 
-            // text.textContent = ` beta = ${
-            //   beta / 1000
-            // }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
-            // console.log("text: ", text);
+            text.textContent = ` beta = ${
+              beta / 1000
+            }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
+            console.log("text: ", text);
 
-            // medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
-
-            var x = event.beta; // Угол наклона по оси X
-            var y = event.gamma; // Угол наклона по оси Y
-            var z = event.alpha; // Угол наклона по оси Z
-
-            // Используем углы для управления ориентацией модели
-            medalBody.quaternion.x = (x * Math.PI) / 180;
-            medalBody.quaternion.y = (y * Math.PI) / 180;
-            medalBody.quaternion.z = (z * Math.PI) / 180;
-
-            medalBody.position.set(
-              (x * Math.PI) / 180,
-              (y * Math.PI) / 180,
-              (z * Math.PI) / 180
-            );
+            medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

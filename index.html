@@ -221,8 +221,8 @@
             var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
             console.log("gamma: ", gamma);
 
-            var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-            console.log("alpha: ", alpha);
+            // var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
+            // console.log("alpha: ", alpha);
 
             text.textContent = `a = ${alpha} , b = ${beta}, g = ${gamma}`;
             console.log("text: ", text);
@@ -231,7 +231,7 @@
             const y = medalBody.position.y;
             const z = medalBody.position.z;
 
-            medalBody.position.set(x + beta, y + gamma, z + alpha);
+            medalBody.position.set(x + beta / 100, y + gamma / 100, z);
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

@@ -3,93 +3,281 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Болтающаяся медаль</title>
+    <title>M-Box</title>
+
     <style>
       body {
         margin: 0;
       }
-      #canvas {
-        display: block;
+
+      .text {
+        height: 200px;
+        font-size: 18px;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
     </style>
   </head>
   <body>
-    <div id="canvas"></div>
+    <div hidden class="setting">
+      <div
+        class="path__scr"
+        data-setting="https://arweave.net/*******************************************"
+      ></div>
+      <div
+        class="path__?"
+        data-setting="https://arweave.net/*******************************************"
+      ></div>
+      <div
+        class="path__draco"
+        data-setting="https://ipfs.io/ipfs/QmRtxmQ8198Fk17MUkyPDpfCkXFdERbzLzRgLEPHwFLbLB/draco/"
+      ></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+      <div class="scene_setting">
+        <div class="ss_name" data-setting="text"></div>
+        <div class="ss_advmsg" data-setting="text"></div>
+        <!-- Текстовый информационный блок -->
+        <div
+          class="ss_envmap"
+          data-setting="https://arweave.net/hm24jwn7B_MlzIZgdhV0jEiqMyT3bydaaMoEMD5jnFo"
+        ></div>
+        <div class="ss_envstrength" data-setting="1"></div>
+        <!-- Сила освещения -->
+        <div class="ss_gravity" data-setting="9,80665"></div>
+
+        <div
+          class="ss_box_mesh"
+          data-setting="https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM"
+        ></div>
+        <div
+          class="ss_box_albedo"
+          data-setting="https://arweave.net/XnXv1vZS_IW5UaoHzuTSxjntpu2XXNQKa3PAXEgBOCY"
+        ></div>
+        <div
+          class="ss_box_normal"
+          data-setting="https://arweave.net/gyu2KWDSa-CMhBnExzbARhMxYENJcS9fDMhS__thP5M"
+        ></div>
+        <div
+          class="ss_box_roughness"
+          data-setting="https://arweave.net/dM-nwPlJ38TdOgPJgbjJn44KzZLQBdsgG7u02onAAxc"
+        ></div>
+        <div class="ss_box_metalness" data-setting=""></div>
+        <!-- https://arweave.net/ -->
+        <div class="ss_box_density" data-setting="0.5"></div>
+        <div class="ss_box_mass" data-setting="10"></div>
+        <div class="ss_box_st_friction" data-setting="0.3"></div>
+        <div class="ss_box_dyn_friction" data-setting="0.3"></div>
+        <div class="ss_box_bounciness" data-setting="0.5"></div>
+
+        <div
+          class="ss_medal_mesh"
+          data-setting="https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c"
+        ></div>
+        <div
+          class="ss_medal_albedo"
+          data-setting="https://arweave.net/3-XKeM0kOxIrq6C0OCEBkoWprrUEmCxGfnqhrmhU0fM"
+        ></div>
+        <div
+          class="ss_medal_normal"
+          data-setting="https://arweave.net/PiK-P_5qNexb54MsL-BQMxBXf2Rersubc0CX65U7QyM"
+        ></div>
+        <div
+          class="ss_medal_roughness"
+          data-setting="https://arweave.net/_Nf5rrCBRbVdcW2IfTJG97MajxPQmTHr4pzgACJ51Ik"
+        ></div>
+        <div class="ss_medal_metalness" data-setting=""></div>
+        <!-- https://arweave.net/ -->
+        <div class="ss_medal_density" data-setting="0.5"></div>
+        <div class="ss_medal_mass" data-setting="10"></div>
+        <div class="ss_medal_st_friction" data-setting="0.3"></div>
+        <div class="ss_medal_dyn_friction" data-setting="0.3"></div>
+        <div class="ss_medal_bounciness" data-setting="0.5"></div>
+
+        <div
+          class="ss_rope_albedo"
+          data-setting="https://arweave.net/XdR3tA31mfbhtjEgdklD9wA9pTHRu2-15F7wmoE42k4"
+        ></div>
+        <!--  -->
+      </div>
+
+      <div class="model-1">
+        <div
+          class="m1_mesh"
+          data-setting="https://arweave.net/2xrlQq353EY494Q1MEty8OVZJOyQw-otkSvd1iOwXZY"
+        ></div>
+        <!-- kPgptTtGBhJdGUCYj1bToKX6EO1s3GrkAOObauEJAc8 -->
+        <div
+          class="m1_albedo"
+          data-setting="https://arweave.net/_YEzL8T9lK0ty5EQ7nECVUEBNSIcMXLH9J0Y8rXFynw"
+        ></div>
+        <div
+          class="m1_normal"
+          data-setting="https://arweave.net/lGDYsR6RbgUkmL6KHhs4GyozbyvI2YVmtDXpu_suce8"
+        ></div>
+        <div
+          class="m1_roughness"
+          data-setting="https://arweave.net/giGKRY_xr0M0Uwj7MUtlrLz3vuV-zfkUq1IfgeqFzqo"
+        ></div>
+        <div class="m1_metalness" data-setting=""></div>
+        <!-- https://arweave.net/ -->
+        <div class="m1_density" data-setting="0.5"></div>
+        <div class="m1_mass" data-setting="10"></div>
+        <div class="m1_st_friction" data-setting="0.3"></div>
+        <div class="m1_dyn_friction" data-setting="0.3"></div>
+        <div class="m1_bounciness" data-setting="0.5"></div>
+      </div>
+
+      <div class="model-2">
+        <div
+          class="m2_mesh"
+          data-setting="https://arweave.net/YGIqWc0EN9SZHctlt9JechCmIP_AC3Y5MKkqQsqFxyA"
+        ></div>
+        <!-- eYbVULjW7dryto_obr7jJnYVf7YqrjboGnDZZyBQhxk -->
+        <div
+          class="m2_albedo"
+          data-setting="https://arweave.net/Hfw75Pyvd8Iv51y0cp8pdfqBigJvdfv8qQMxYbi8480"
+        ></div>
+        <div class="m2_normal" data-setting=""></div>
+        <!-- Игнорировать, если отсутствует -->
+        <div
+          class="m2_roughness"
+          data-setting="https://arweave.net/mo1LcZjeSWPXQeDYm5fplpK-FOyjOuJslFW8XDczSi4"
+        ></div>
+        <div class="m2_metalness" data-setting=""></div>
+        <!-- https://arweave.net/ -->
+        <div class="m2_density" data-setting="0.5"></div>
+        <div class="m2_mass" data-setting="10"></div>
+        <div class="m2_st_friction" data-setting="0.3"></div>
+        <div class="m2_dyn_friction" data-setting="0.3"></div>
+        <div class="m2_bounciness" data-setting="0.5"></div>
+      </div>
+    </div>
+
+    <div class="container3d"></div>
+    <div class="text"></div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/DRACOLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js"></script>
+    <script src="CannonDebugRenderer.js"></script>
 
     <script>
-      // Инициализация сцены и камеры
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        100
-      );
+      // Ждем события загрузки документа
+      document.addEventListener("DOMContentLoaded", () => {
+        const text = document.querySelector(".text");
+        //medal
+        const medal = document.querySelector(".ss_medal_mesh").dataset.setting;
 
-      camera.position.z = 9;
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          100
+        );
+        camera.position.z = 14;
 
-      // Инициализация рендера
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x404040);
-      document.getElementById("canvas").appendChild(renderer.domElement);
+        // Создаем рендерер
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x404040);
+        document.querySelector(".container3d").appendChild(renderer.domElement);
 
-      // Настройка освещения
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      scene.add(light);
-      light.position.set(0, 0, 3);
+        // ---------------LIGHT
+        const light = new THREE.PointLight(0xffffff, 3, 100);
+        light.position.set(0, 0, 5);
+        scene.add(light);
 
-      const world = new CANNON.World();
-      world.gravity.set(0, -9.82, 0); // Гравитация
+        const gltfLoader = new THREE.GLTFLoader();
 
-      // Загрузка модели медали
-      const loader = new THREE.GLTFLoader();
-      loader.load(
-        "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
-        (gltf) => {
-          const medalMesh = gltf.scene;
-          scene.add(medalMesh);
+        //------------CANNON
+        const world = new CANNON.World();
+        world.gravity.set(0, -9.82, 0);
 
-          // Создание физического тела медали
-          const shape = new THREE.BoxGeometry(1, 1, 1);
+        // ------------------ MEDAL ------------------
+
+        gltfLoader.load(medal, function (gltf) {
+          const model = gltf.scene;
+          scene.add(model);
+
+          model.position.set(0, 4, 0);
+
+          // Создаем физическое тело для медали
+          const medalShape = new CANNON.Box(new CANNON.Vec3(2, 2, 0.3));
           const medalBody = new CANNON.Body({
-            mass: 1, // Масса медали
-            shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), // Форма медали
+            mass: 0.1,
+            shape: medalShape,
           });
 
-          // Добавление физического тела в мир
+          medalBody.position.set(0, 7, 0);
+          world.add(medalBody);
 
-          world.addBody(medalBody);
+          window.addEventListener("deveceorientation", (event) => {
+            var x = event.beta; // Угол наклона по оси X
+            var y = event.gamma; // Угол наклона по оси Y
+            var z = event.alpha; // Угол наклона по оси Z
 
-          // Добавление обработчика гироскопа
-          window.addEventListener("deviceorientation", (event) => {
-            const yAngle = event.gamma; // Значение гамма угла из гироскопа
-            medalBody.angularVelocity.set(0, yAngle, 0); // Установка угловой скорости медали
+            text.textContent = `a = ${x} , b = ${y}, g = ${z}`;
+
+            medalBody.position.set(x, y, z);
           });
 
-          // Отрисовка сцены
+          // Анимация
           function animate() {
             requestAnimationFrame(animate);
-            world.step(1 / 60); // Вычисление физической симуляции
-            medalBody.position.copy(medalMesh.position); // Обновление позиции медали
+            world.step(1 / 60);
+            model.position.copy(medalBody.position);
+            model.quaternion.copy(medalBody.quaternion);
 
             renderer.render(scene, camera);
           }
-
           animate();
-        }
-      );
+        });
 
-      //   // Обновление размеров при изменении размеров окна
-      //   window.addEventListener("resize", () => {
-      //     camera.aspect = window.innerWidth / window.innerHeight;
-      //     camera.updateProjectionMatrix();
-      //     renderer.setSize(window.innerWidth, window.innerHeight);
-      //   });
+        //плоскость
+        const geometry = new THREE.PlaneGeometry(10, 10);
+        const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+        const plane = new THREE.Mesh(geometry, material);
+        plane.receiveShadow = true;
+
+        plane.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(1, 0, 0),
+          -Math.PI / 2
+        );
+        scene.add(plane);
+
+        // скелет плоскости
+        const groundBody = new CANNON.Body({
+          mass: 0,
+        });
+        const groundShape = new CANNON.Plane(100, 100);
+        groundBody.addShape(groundShape);
+        console.log("groundBody: ", groundBody);
+        groundBody.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(1, 0, 0),
+          -Math.PI / 2
+        ); //Поворачиваем в горизонтальное положение
+        world.addBody(groundBody);
+
+        //OrbitControls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.minDistance = 5;
+        controls.maxDistance = 20;
+
+        const cannonDebugRenderer = new THREE.CannonDebugRenderer(scene, world);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          // Дополнительная логика анимации или интерактивности может быть добавлена здесь
+          controls.update();
+          cannonDebugRenderer.update();
+
+          renderer.render(scene, camera);
+        }
+        animate();
+      });
     </script>
   </body>
 </html>

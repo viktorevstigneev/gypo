@@ -50,48 +50,69 @@
       const light = new THREE.DirectionalLight(0xffffff, 1);
       scene.add(light);
       light.position.set(0, 0, 4);
-      // Загрузка моделей: медальон, домик и веревка
-      const loader = new THREE.GLTFLoader();
-      let medalMesh, houseMesh;
-
       const text = document.querySelector(".text");
 
+      // Настройка физического движка
+      const world = new CANNON.World();
+      world.gravity.set(0, -9.82, 0);
+
+      // Отладка физики
+      //   const debugRenderer = new THREE.CannonDebugRenderer(scene, world);
+
+      // Загрузка модели домика
+      const loader = new THREE.GLTFLoader();
+      let houseMesh;
+
       loader.load(
-        "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
+        "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
         (gltf) => {
-          medalMesh = gltf.scene;
-          medalMesh.position.set(0, 5, 0);
-          scene.add(medalMesh);
+          houseMesh = gltf.scene;
+          scene.add(houseMesh);
 
+          // Создаем твердые тела для коллизий
+          const houseBody = new CANNON.Body({
+            mass: 0,
+            shape: new CANNON.Box(new CANNON.Vec3(3, 3, 3)),
+          }); // Предположим, что дом имеет размер 6x6x6
+          houseBody.position.set(0, 1.5, 0); // Поднимаем его на половину высоты, чтобы он находился на земле
+          world.addBody(houseBody);
+
+          // Загрузка модели медальона
           loader.load(
-            "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
+            "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
             (gltf) => {
-              houseMesh = gltf.scene;
-              houseMesh.position.set(0, 0, 0);
-              scene.add(houseMesh);
-
-              // Создание гибкой веревки
-              const ropeGeometry = new THREE.CylinderGeometry(
-                0.05,
-                0.05,
-                5,
-                20
-              );
-              const ropeMaterial = new THREE.MeshBasicMaterial({
-                color: 0xcccccc,
+              const medalMesh = gltf.scene;
+              scene.add(medalMesh);
+              const medalBody = new CANNON.Body({
+                mass: 1,
+                shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)),
               });
-              const ropeMesh = new THREE.Mesh(ropeGeometry, ropeMaterial);
-              ropeMesh.position.set(0, 2, 0);
-              scene.add(ropeMesh);
+              medalBody.position.set(0, 4, 0); // Начальная позиция медальона
+              world.addBody(medalBody);
+
+              // Создаем гибкую веревку
+              const ropeShape = new CANNON.Cylinder(0.05, 0.05, 5, 20);
+              const ropeBody = new CANNON.Body({ mass: 0 });
+              ropeBody.addShape(ropeShape);
+              ropeBody.position.set(0, 2.5, 0); // Начальная позиция
+              world.addBody(ropeBody);
+
+              const hinge = new CANNON.HingeConstraint(ropeBody, medalBody, {
+                pivotA: new CANNON.Vec3(0, 2.5, 0), // Позиция на веревке
+                pivotB: new CANNON.Vec3(0.5, 0.5, 0.5), // Позиция на медальоне
+              });
+              world.addConstraint(hinge);
 
               // Обработка событий гироскопа
               if (window.DeviceOrientationEvent) {
                 window.addEventListener("deviceorientation", (event) => {
                   const gamma = event.gamma / 100;
                   const beta = event.beta / 100;
-                  medalMesh.position.x = gamma * 5; // Применяем угол наклона к координатам X
-                  medalMesh.position.y = beta * 5; // Применяем угол наклона к координатам Y
-                  text.textContent = ` b = ${beta} g = ${gamma}`;
+                  const alpha = event.alpha / 100;
+                  medalBody.velocity.z = alpha;
+                  medalBody.velocity.x = gamma; // Применяем угол наклона к скорости модели
+                  medalBody.velocity.y = beta; // Применяем угол наклона к скорости модели
+                  text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
                 });
                 animate();
               }
@@ -104,6 +125,8 @@
         requestAnimationFrame(animate);
         // Обновление Three.js сцены
         renderer.render(scene, camera);
+        // Обновление Cannon.js физики
+        world.step(1 / 60);
       }
 
       animate();

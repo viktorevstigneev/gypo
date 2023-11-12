@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Гибкая веревка и гироскоп</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container3"></div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/DRACOLoader.js"></script>
+    <script>
+      // --------------------------------------SCENE-----------------------------------
+      const scene = new THREE.Scene();
+
+      // ------------------------------------CAMERA------------------------------------
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.z = 4;
+
+      //   -----------------------------------------RENDERER----------------------------
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x404040);
+      document.querySelector(".container3").appendChild(renderer.domElement);
+
+      //   -----------------------------------------LIGHT---------------------------------
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      scene.add(light);
+      light.position.set(0, 0, 4);
+
+      //---------------------------------------- Гибкая веревка (это будет невидимый отрезок для физики)---------------------------------
+      const ropeShape = new CANNON.Cylinder(0.1, 0.1, 5, 20);
+      const ropeBody = new CANNON.Body({ mass: 0 });
+      ropeBody.addShape(ropeShape);
+      ropeBody.position.set(0, 0, 0);
+      ropeBody.quaternion.setFromAxisAngle(
+        new CANNON.Vec3(1, 0, 0),
+        Math.PI / 2
+      );
+
+      // -------------------------------------------------------Создание твердого тела для модели медальона---------------------------
+      const medalShape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+      const medalBody = new CANNON.Body({ mass: 1 });
+      medalBody.addShape(medalShape);
+      medalBody.position.set(0, 5, 0);
+
+      const world = new CANNON.World();
+      world.gravity.set(0, -9.82, 0);
+      world.addBody(ropeBody);
+      world.addBody(medalBody);
+
+      //   ------------------------------------------------ LOADER GTFL-------------------------------------
+
+      const gltfLoader = new THREE.GLTFLoader();
+
+      //  ------------------------------------------------- Загрузка моделей-------------------------------------
+      gltfLoader.load(
+        "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
+        function (gltf) {
+          const model = gltf.scene;
+          console.log("model: ", model);
+
+          test = model;
+
+          scene.add(model);
+          animate();
+          model.position.set(0, 0, 0);
+        }
+      );
+
+      // Обработка событий гироскопа
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", handleDeviceOrientation);
+      }
+
+      function handleDeviceOrientation(event) {
+        const alpha = event.alpha; // угол поворота вокруг оси Z
+        const beta = event.beta; // угол поворота вокруг оси X
+        const gamma = event.gamma; // угол поворота вокруг оси Y
+
+        // Применяем данные гироскопа к физике модели
+        const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы
+        medalBody.applyLocalForce(force, new CANNON.Vec3(0, 0, 0)); // Применяем силу к телу модели
+      }
+
+      // Анимационный цикл для отрисовки сцены
+      function animate() {
+        requestAnimationFrame(animate);
+        // Обновление Three.js сцены
+        renderer.render(scene, camera);
+        // Обновление Cannon.js физики
+        world.step(1 / 60);
+      }
+
+      // Запуск анимации
+      animate();
+    </script>
+  </body>
+</html>

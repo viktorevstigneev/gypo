@@ -56,12 +56,9 @@
       const world = new CANNON.World();
       world.gravity.set(0, -9.82, 0);
 
-      // Отладка физики
-      //   const debugRenderer = new THREE.CannonDebugRenderer(scene, world);
-
       // Загрузка модели домика
       const loader = new THREE.GLTFLoader();
-      let houseMesh;
+      let houseMesh, medalMesh, ropeMesh;
 
       loader.load(
         "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
@@ -81,25 +78,26 @@
           loader.load(
             "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
             (gltf) => {
-              const medalMesh = gltf.scene;
+              medalMesh = gltf.scene;
               scene.add(medalMesh);
-              const medalBody = new CANNON.Body({
-                mass: 1,
-                shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)),
-              });
-              medalBody.position.set(0, 4, 0); // Начальная позиция медальона
+
+              // Создаем твердое тело для модели медальона
+              const shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+              const medalBody = new CANNON.Body({ mass: 1 });
+              medalBody.addShape(shape);
+              medalBody.position.set(0, 5, 0);
               world.addBody(medalBody);
 
               // Создаем гибкую веревку
               const ropeShape = new CANNON.Cylinder(0.05, 0.05, 5, 20);
-              const ropeBody = new CANNON.Body({ mass: 0 });
-              ropeBody.addShape(ropeShape);
-              ropeBody.position.set(0, 2.5, 0); // Начальная позиция
+              const ropeBody = new CANNON.Body({ mass: 0, shape: ropeShape });
+              ropeBody.position.set(0, 2.5, 0);
               world.addBody(ropeBody);
 
+              // Создаем шарнир для соединения веревки с медальоном
               const hinge = new CANNON.HingeConstraint(ropeBody, medalBody, {
                 pivotA: new CANNON.Vec3(0, 2.5, 0), // Позиция на веревке
-                pivotB: new CANNON.Vec3(0.5, 0.5, 0.5), // Позиция на медальоне
+                pivotB: new CANNON.Vec3(0, -0.5, 0), // Позиция на медальоне
               });
               world.addConstraint(hinge);
 
@@ -108,11 +106,11 @@
                 window.addEventListener("deviceorientation", (event) => {
                   const gamma = event.gamma / 100;
                   const beta = event.beta / 100;
-                  const alpha = event.alpha / 100;
-                  medalBody.velocity.z = alpha;
-                  medalBody.velocity.x = gamma; // Применяем угол наклона к скорости модели
-                  medalBody.velocity.y = beta; // Применяем угол наклона к скорости модели
-                  text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
+                  text.textContent = ` b = ${beta} g = ${gamma}`;
+
+                  // Применяем данные гироскопа к физике модели
+                  medalBody.velocity.x = gamma * 3; // Применяем угол наклона к скорости модели
+                  medalBody.velocity.y = beta * 3; // Применяем угол наклона к скорости модели
                 });
                 animate();
               }
@@ -123,14 +121,14 @@
 
       function animate() {
         requestAnimationFrame(animate);
+        // Обновляем физику
+        world.step(1 / 60);
+
         // Обновление Three.js сцены
         renderer.render(scene, camera);
-        // Обновление Cannon.js физики
-        world.step(1 / 60);
       }
 
       animate();
-
       //   //---------------------------------------- Гибкая веревка (это будет невидимый отрезок для физики)---------------------------------
       //   const ropeShape = new CANNON.Cylinder(0.1, 0.1, 5, 20);
       //   const ropeBody = new CANNON.Body({ mass: 0 });

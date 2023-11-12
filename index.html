@@ -214,6 +214,16 @@
           medalBody.position.set(0, 7, 0);
           world.add(medalBody);
 
+          const calculateZpos = (beta, z) => {
+            if (beta >= 0.09) {
+              return z + beta / 1000;
+            }
+
+            if (beta <= 0.09) {
+              return z - beta / 1000;
+            }
+          };
+
           window.addEventListener("deviceorientation", (event) => {
             var beta = Math.floor(event.beta) - 0.09; // Угол наклона по оси X
             console.log("beta: ", beta); ///zzzzzzzzzzz
@@ -231,7 +241,7 @@
             const y = medalBody.position.y;
             const z = medalBody.position.z;
 
-            medalBody.position.set(x + gamma / 1000, y, z - beta / 1000);
+            medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

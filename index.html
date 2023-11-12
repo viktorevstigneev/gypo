@@ -205,7 +205,7 @@
           model.position.set(0, 4, 0);
 
           // Создаем физическое тело для медали
-          const medalShape = new CANNON.Box(new CANNON.Vec3(2, 2, 0.3));
+          const medalShape = new CANNON.Box(new CANNON.Vec3(2, 2, 0.1));
           const medalBody = new CANNON.Body({
             mass: 0.1,
             shape: medalShape,
@@ -215,11 +215,11 @@
           world.add(medalBody);
 
           window.addEventListener("deviceorientation", (event) => {
-            var x = Math.floor(event.beta / 100); // Угол наклона по оси X
+            var x = Math.floor(event.beta); // Угол наклона по оси X
             console.log("x: ", x);
-            var y = Math.floor(event.gamma / 100); // Угол наклона по оси Y
+            var y = Math.floor(event.gamma); // Угол наклона по оси Y
             console.log("y : ", y);
-            var z = Math.floor(event.alpha / 100); // Угол наклона по оси Z
+            var z = Math.floor(event.alpha); // Угол наклона по оси Z
             console.log("z: ", z);
 
             text.textContent = `a = ${x} , b = ${y}, g = ${z}`;

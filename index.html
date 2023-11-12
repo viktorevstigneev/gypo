@@ -110,6 +110,12 @@
                   // Применяем данные гироскопа к физике модели
                   medalBody.velocity.set(2 * gamma, 2 * beta, 0);
                 });
+
+                function animate() {
+                  requestAnimationFrame(animate);
+
+                  medalMesh.position.copy(medalBody.position);
+                }
                 animate();
               }
             }

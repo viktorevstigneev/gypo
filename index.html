@@ -94,7 +94,6 @@
               ropeBody.position.set(0, 2.5, 0);
               world.addBody(ropeBody);
 
-              // Создаем шарнир для соединения веревки с медальоном
               const hinge = new CANNON.HingeConstraint(ropeBody, medalBody, {
                 pivotA: new CANNON.Vec3(0, 2.5, 0), // Позиция на веревке
                 pivotB: new CANNON.Vec3(0, -0.5, 0), // Позиция на медальоне
@@ -109,8 +108,7 @@
                   text.textContent = ` b = ${beta} g = ${gamma}`;
 
                   // Применяем данные гироскопа к физике модели
-                  medalBody.velocity.x = gamma * 3; // Применяем угол наклона к скорости модели
-                  medalBody.velocity.y = beta * 3; // Применяем угол наклона к скорости модели
+                  medalBody.velocity.set(2 * gamma, 2 * beta, 0);
                 });
                 animate();
               }
@@ -129,6 +127,7 @@
       }
 
       animate();
+
       //   //---------------------------------------- Гибкая веревка (это будет невидимый отрезок для физики)---------------------------------
       //   const ropeShape = new CANNON.Cylinder(0.1, 0.1, 5, 20);
       //   const ropeBody = new CANNON.Body({ mass: 0 });

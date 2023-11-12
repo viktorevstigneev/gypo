@@ -215,17 +215,23 @@
           world.add(medalBody);
 
           window.addEventListener("deviceorientation", (event) => {
-            var x = event.beta / 100; // Угол наклона по оси X
+            var x = Math.floor(event.beta / 100); // Угол наклона по оси X
             console.log("x: ", x);
-            var y = event.gamma / 100; // Угол наклона по оси Y
+            var y = Math.floor(event.gamma / 100); // Угол наклона по оси Y
             console.log("y : ", y);
-            var z = event.alpha / 100; // Угол наклона по оси Z
+            var z = Math.floor(event.alpha / 100); // Угол наклона по оси Z
             console.log("z: ", z);
 
             text.textContent = `a = ${x} , b = ${y}, g = ${z}`;
             console.log("text: ", text);
 
             medalBody.position.set(x, y, z);
+            medalBody.quaternion.setFromAxisAngle(
+              new CANNON.Vec3(x, y, z),
+              -Math.PI / 2
+            );
+            model.position.copy(medalBody.position);
+            model.quaternion.copy(medalBody.quaternion);
           });
 
           // Анимация

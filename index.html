@@ -215,7 +215,7 @@
           world.add(medalBody);
 
           window.addEventListener("deviceorientation", (event) => {
-            var beta = Math.floor(event.beta); // Угол наклона по оси X
+            var beta = Math.floor(event.beta) - 0.09; // Угол наклона по оси X
             console.log("beta: ", beta); ///zzzzzzzzzzz
 
             var gamma = Math.floor(event.gamma); // Угол наклона по оси Y

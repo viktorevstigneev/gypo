@@ -224,14 +224,14 @@
             var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
             console.log("alpha: ", alpha);
 
-            text.textContent = `a = ${alpha} , b = ${beta}, g = ${gamma}`;
+            text.textContent = ` b = ${beta/1000}, g = ${gamma/1000}`;
             console.log("text: ", text);
 
             const x = medalBody.position.x;
             const y = medalBody.position.y;
             const z = medalBody.position.z;
 
-            medalBody.position.set(x + beta / 100, y + gamma / 100, z);
+            medalBody.position.set(x + beta / 1000, y + gamma / 1000, z);
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

@@ -87,12 +87,12 @@
         }
       );
 
-      const text = document.querySelector(".text").textContent;
+      const text = document.querySelector(".text");
       function handleDeviceOrientation(event) {
         const alpha = event.alpha; // угол поворота вокруг оси Z
         const beta = event.beta; // угол поворота вокруг оси X
         const gamma = event.gamma; // угол поворота вокруг оси Y
-        text = `a = ${alpha} b = ${beta} g = ${gamma}`;
+        text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
 
         // Применяем данные гироскопа к физике модели
         const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы

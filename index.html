@@ -247,7 +247,7 @@
             }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
             console.log("text: ", text);
 
-            medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
+            medalBody.position.set(x + gamma / 1000, y, beta);
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

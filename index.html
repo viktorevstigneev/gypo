@@ -217,7 +217,7 @@
           const calculateZpos = (beta, z) => {
             let result;
             if (beta < 0.09) {
-              result = z + beta - 0.09 / 1000;
+              result = z + beta - 0.025 / 1000;
             }
             if (beta > 0.09) {
               result = z + beta / 1000;

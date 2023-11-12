@@ -215,19 +215,16 @@
           world.add(medalBody);
 
           const calculateZpos = (beta, z) => {
-            let result;
             if (beta < 0.09) {
-              result = z - beta  / 1000;
+              return z - beta / 1000;
             }
             if (beta > 0.09) {
-              result = z + beta / 1000;
+              return +beta / 1000;
             }
 
             if (beta > 0 && beta < 0.085) {
-              result = 0;
+              return 0;
             }
-
-            return result;
           };
 
           window.addEventListener("deviceorientation", (event) => {

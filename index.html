@@ -50,80 +50,62 @@
       const light = new THREE.DirectionalLight(0xffffff, 1);
       scene.add(light);
       light.position.set(0, 0, 4);
-
-      // Гибкая веревка (это будет невидимый отрезок для физики)
-      const ropeShape = new CANNON.Cylinder(0.05, 0.05, 2, 20);
-      const ropeBody = new CANNON.Body({ mass: 0 });
-      ropeBody.addShape(ropeShape);
-      ropeBody.position.set(0, 2, 0);
-
-      // Создание твердого тела для модели медальона
-      const medalShape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
-      const medalBody = new CANNON.Body({ mass: 1 });
-      medalBody.addShape(medalShape);
-      medalBody.position.set(0, 5, 0);
-
-      const world = new CANNON.World();
-      world.gravity.set(0, -9.82, 0);
-      world.addBody(ropeBody);
-      world.addBody(medalBody);
-
       // Загрузка моделей: медальон, домик и веревка
       const loader = new THREE.GLTFLoader();
-      const models = {};
-      const modelURLs = {
-        medal:
-          "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
-        house:
-          "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
-      };
-
-      Promise.all(
-        Object.keys(modelURLs).map(
-          (modelKey) =>
-            new Promise((resolve) => {
-              loader.load(modelURLs[modelKey], (gltf) => {
-                models[modelKey] = gltf.scene;
-                scene.add(models[modelKey]);
-                if (modelKey === "house") {
-                  models[modelKey].position.y = -1; // Настройка положения домика
-                }
-                resolve();
-              });
-            })
-        )
-      ).then(() => {
-        animate();
-      });
-
-      // Обработка событий гироскопа
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", handleDeviceOrientation);
-      }
+      let medalMesh, houseMesh;
 
       const text = document.querySelector(".text");
 
-      function handleDeviceOrientation(event) {
-        const alpha = event.alpha; // угол поворота вокруг оси Z
-        const beta = event.beta; // угол поворота вокруг оси X
-        const gamma = event.gamma; // угол поворота вокруг оси Y
-        text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
+      loader.load(
+        "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
+        (gltf) => {
+          medalMesh = gltf.scene;
+          medalMesh.position.set(0, 5, 0);
+          scene.add(medalMesh);
 
-        // Применяем данные гироскопа к физике модели
-        const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы
-        medalBody.applyLocalForce(force, new CANNON.Vec3(0, 0, 0)); // Применяем силу к телу модели
-      }
+          loader.load(
+            "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
+            (gltf) => {
+              houseMesh = gltf.scene;
+              houseMesh.position.set(0, 0, 0);
+              scene.add(houseMesh);
 
-      // Анимационный цикл для отрисовки сцены
+              // Создание гибкой веревки
+              const ropeGeometry = new THREE.CylinderGeometry(
+                0.05,
+                0.05,
+                5,
+                20
+              );
+              const ropeMaterial = new THREE.MeshBasicMaterial({
+                color: 0xcccccc,
+              });
+              const ropeMesh = new THREE.Mesh(ropeGeometry, ropeMaterial);
+              ropeMesh.position.set(0, 2, 0);
+              scene.add(ropeMesh);
+
+              // Обработка событий гироскопа
+              if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", (event) => {
+                  const gamma = event.gamma / 100;
+                  const beta = event.beta / 100;
+                  medalMesh.position.x = gamma * 5; // Применяем угол наклона к координатам X
+                  medalMesh.position.y = beta * 5; // Применяем угол наклона к координатам Y
+                  text.textContent = ` b = ${beta} g = ${gamma}`;
+                });
+                animate();
+              }
+            }
+          );
+        }
+      );
+
       function animate() {
         requestAnimationFrame(animate);
         // Обновление Three.js сцены
         renderer.render(scene, camera);
-        // Обновление Cannon.js физики
-        world.step(1 / 60);
       }
 
-      // Запуск анимации
       animate();
 
       //   //---------------------------------------- Гибкая веревка (это будет невидимый отрезок для физики)---------------------------------

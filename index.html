@@ -215,23 +215,30 @@
           world.add(medalBody);
 
           window.addEventListener("deviceorientation", (event) => {
-            var x = Math.floor(event.beta); // Угол наклона по оси X
-            console.log("x: ", x);
-            var y = Math.floor(event.gamma); // Угол наклона по оси Y
-            console.log("y : ", y);
-            var z = Math.floor(event.alpha); // Угол наклона по оси Z
-            console.log("z: ", z);
+            var beta = Math.floor(event.beta); // Угол наклона по оси X
+            console.log("beta: ", beta);
 
-            text.textContent = `a = ${x} , b = ${y}, g = ${z}`;
+            var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
+            console.log("gamma: ", gamma);
+
+            var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
+            console.log("alpha: ", alpha);
+
+            text.textContent = `a = ${alpha} , b = ${beta}, g = ${gamma}`;
             console.log("text: ", text);
 
-            medalBody.position.set(x, y, z);
-            medalBody.quaternion.setFromAxisAngle(
-              new CANNON.Vec3(x, y, z),
-              -Math.PI / 2
-            );
-            model.position.copy(medalBody.position);
-            model.quaternion.copy(medalBody.quaternion);
+            const x = medalBody.position.x;
+            const y = medalBody.position.y;
+            const z = medalBody.position.z;
+
+            medalBody.position.set(x + beta, y + gamma, z + alpha);
+
+            // medalBody.quaternion.setFromAxisAngle(
+            //   new CANNON.Vec3(x, y, z),
+            //   -Math.PI / 2
+            // );
+            // model.position.copy(medalBody.position);
+            // model.quaternion.copy(medalBody.quaternion);
           });
 
           // Анимация

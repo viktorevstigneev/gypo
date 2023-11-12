@@ -234,14 +234,14 @@
             var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
             console.log("alpha: ", alpha);
 
+            const x = medalBody.position.x;
+            const y = medalBody.position.y;
+            const z = medalBody.position.z;
+
             text.textContent = ` beta = ${
               beta / 1000
             }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
             console.log("text: ", text);
-
-            const x = medalBody.position.x;
-            const y = medalBody.position.y;
-            const z = medalBody.position.z;
 
             medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
 

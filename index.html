@@ -216,7 +216,7 @@
 
           window.addEventListener("deviceorientation", (event) => {
             var beta = Math.floor(event.beta); // Угол наклона по оси X
-            console.log("beta: ", beta);
+            console.log("beta: ", beta); ///zzzzzzzzzzz
 
             var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
             console.log("gamma: ", gamma);
@@ -231,7 +231,7 @@
             const y = medalBody.position.y;
             const z = medalBody.position.z;
 
-            medalBody.position.set(x + beta / 1000, y , z);
+            medalBody.position.set(x + gamma / 1000, y, z);
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

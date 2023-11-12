@@ -224,7 +224,7 @@
             var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
             console.log("alpha: ", alpha);
 
-            text.textContent = ` b = ${beta/1000}, g = ${gamma/1000}`;
+            text.textContent = ` b = ${beta / 1000}, g = ${gamma / 1000}`;
             console.log("text: ", text);
 
             const x = medalBody.position.x;
@@ -253,7 +253,7 @@
           animate();
         });
 
-        //плоскость
+        //плоскость 1
         const geometry = new THREE.PlaneGeometry(10, 10);
         const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
         const plane = new THREE.Mesh(geometry, material);
@@ -267,7 +267,7 @@
         plane.position.set(0, -5, 0);
         scene.add(plane);
 
-        // скелет плоскости
+        // скелет плоскости 1
         const groundBody = new CANNON.Body({
           mass: 0,
         });
@@ -281,6 +281,59 @@
         ); //Поворачиваем в горизонтальное положение
         groundBody.position.set(0, -5, 0);
         world.addBody(groundBody);
+
+        // Плоскости - стенки
+        //plane
+        var planeBody = new CANNON.Body({
+          mass: 0,
+          position: new CANNON.Vec3(0, 0, 5), // Изменяем позицию
+        });
+        var planeShape = new CANNON.Plane(0.1, 0.2);
+        planeBody.addShape(planeShape);
+        planeBody.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(1, 0, 0),
+          Math.PI
+        ); //Поворачиваем
+        world.addBody(planeBody);
+
+        //plane2
+        var planeBody1 = new CANNON.Body({
+          mass: 0,
+          position: new CANNON.Vec3(-5, 0, 0),
+        });
+        var planeShape1 = new CANNON.Plane(0.1, 0.2);
+        planeBody1.addShape(planeShape1);
+        planeBody1.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(0, 1, 0),
+          Math.PI / 2
+        );
+        world.addBody(planeBody1);
+
+        //plane3
+        var planeBody2 = new CANNON.Body({
+          mass: 0,
+          position: new CANNON.Vec3(5, 0, 0),
+        });
+        var planeShape2 = new CANNON.Plane(0.1, 0.2);
+        planeBody2.addShape(planeShape2);
+        planeBody2.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(0, 1, 0),
+          -Math.PI / 2
+        );
+        world.addBody(planeBody2);
+
+        //plane4
+        var planeBody3 = new CANNON.Body({
+          mass: 0,
+          position: new CANNON.Vec3(0, 0, -5),
+        });
+        var planeShape3 = new CANNON.Plane(0.1, 0.2);
+        planeBody3.addShape(planeShape2);
+        planeBody3.quaternion.setFromAxisAngle(
+          new CANNON.Vec3(0, 0, 1),
+          -Math.PI
+        );
+        world.addBody(planeBody3);
 
         //OrbitControls
         const controls = new THREE.OrbitControls(camera, renderer.domElement);

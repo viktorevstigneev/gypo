@@ -222,8 +222,8 @@
               return z - beta / 1000;
             }
 
-            if (beta / 1000 >= 0.07 && beta / 1000 <= 0.09) {
-              return 0;
+            if (beta / 1000 > 0.07) {
+              return z + beta / 1000;
             }
           };
 

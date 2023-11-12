@@ -11,9 +11,17 @@
       canvas {
         display: block;
       }
+
+      .text {
+        position: absolute;
+        font-size: 18px;
+        top: 0;
+        left: 0;
+      }
     </style>
   </head>
   <body>
+    <div class="text"></div>
     <div class="container3"></div>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
@@ -73,29 +81,27 @@
         "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
         function (gltf) {
           const model = gltf.scene;
-          console.log("model: ", model);
-
-          test = model;
-
           scene.add(model);
           animate();
-          model.position.set(0, 0, 0);
+          //   model.position.set(0, 0, 0);
         }
       );
 
-      // Обработка событий гироскопа
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", handleDeviceOrientation);
-      }
-
+      const text = document.querySelector(".text").textContent;
       function handleDeviceOrientation(event) {
         const alpha = event.alpha; // угол поворота вокруг оси Z
         const beta = event.beta; // угол поворота вокруг оси X
         const gamma = event.gamma; // угол поворота вокруг оси Y
+        text = `a = ${alpha} b = ${beta} g = ${gamma}`;
 
         // Применяем данные гироскопа к физике модели
         const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы
         medalBody.applyLocalForce(force, new CANNON.Vec3(0, 0, 0)); // Применяем силу к телу модели
+      }
+
+      // Обработка событий гироскопа
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", handleDeviceOrientation);
       }
 
       // Анимационный цикл для отрисовки сцены

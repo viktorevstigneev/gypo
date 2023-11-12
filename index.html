@@ -3,201 +3,93 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Гибкая веревка и гироскоп</title>
+    <title>Болтающаяся медаль</title>
     <style>
       body {
         margin: 0;
       }
-      canvas {
+      #canvas {
         display: block;
-      }
-
-      .text {
-        position: absolute;
-        font-size: 18px;
-        top: 0;
-        left: 0;
       }
     </style>
   </head>
   <body>
-    <div class="text"></div>
-    <div class="container3"></div>
+    <div id="canvas"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/DRACOLoader.js"></script>
-    <script>
-      // --------------------------------------SCENE-----------------------------------
-      const scene = new THREE.Scene();
 
-      // ------------------------------------CAMERA------------------------------------
+    <script>
+      // Инициализация сцены и камеры
+      const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
         100
       );
+
       camera.position.z = 9;
 
-      //   -----------------------------------------RENDERER----------------------------
+      // Инициализация рендера
       const renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor(0x404040);
-      document.querySelector(".container3").appendChild(renderer.domElement);
+      document.getElementById("canvas").appendChild(renderer.domElement);
 
-      //   -----------------------------------------LIGHT---------------------------------
+      // Настройка освещения
       const light = new THREE.DirectionalLight(0xffffff, 1);
       scene.add(light);
-      light.position.set(0, 0, 4);
-      const text = document.querySelector(".text");
+      light.position.set(0, 0, 3);
 
-      // Настройка физического движка
       const world = new CANNON.World();
-      world.gravity.set(0, -9.82, 0);
+      world.gravity.set(0, -9.82, 0); // Гравитация
 
-      // Загрузка модели домика
+      // Загрузка модели медали
       const loader = new THREE.GLTFLoader();
-      let houseMesh, medalMesh, ropeMesh;
-
       loader.load(
-        "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM",
+        "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
         (gltf) => {
-          houseMesh = gltf.scene;
-          scene.add(houseMesh);
+          const medalMesh = gltf.scene;
+          scene.add(medalMesh);
 
-          // Создаем твердые тела для коллизий
-          const houseBody = new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(3, 3, 3)),
-          }); // Предположим, что дом имеет размер 6x6x6
-          houseBody.position.set(0, 1.5, 0); // Поднимаем его на половину высоты, чтобы он находился на земле
-          world.addBody(houseBody);
+          // Создание физического тела медали
+          const shape = new THREE.BoxGeometry(1, 1, 1);
+          const medalBody = new CANNON.Body({
+            mass: 1, // Масса медали
+            shape: new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)), // Форма медали
+          });
 
-          // Загрузка модели медальона
-          loader.load(
-            "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
-            (gltf) => {
-              medalMesh = gltf.scene;
-              scene.add(medalMesh);
+          // Добавление физического тела в мир
 
-              // Создаем твердое тело для модели медальона
-              const shape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
-              const medalBody = new CANNON.Body({ mass: 1 });
-              medalBody.addShape(shape);
-              medalBody.position.set(0, 5, 0);
-              world.addBody(medalBody);
+          world.addBody(medalBody);
 
-              // Создаем гибкую веревку
-              const ropeShape = new CANNON.Cylinder(0.05, 0.05, 5, 20);
-              const ropeBody = new CANNON.Body({ mass: 0, shape: ropeShape });
-              ropeBody.position.set(0, 2.5, 0);
-              world.addBody(ropeBody);
+          // Добавление обработчика гироскопа
+          window.addEventListener("deviceorientation", (event) => {
+            const yAngle = event.gamma; // Значение гамма угла из гироскопа
+            medalBody.angularVelocity.set(0, yAngle, 0); // Установка угловой скорости медали
+          });
 
-              const hinge = new CANNON.HingeConstraint(ropeBody, medalBody, {
-                pivotA: new CANNON.Vec3(0, 2.5, 0), // Позиция на веревке
-                pivotB: new CANNON.Vec3(0, -0.5, 0), // Позиция на медальоне
-              });
-              world.addConstraint(hinge);
+          // Отрисовка сцены
+          function animate() {
+            requestAnimationFrame(animate);
+            world.step(1 / 60); // Вычисление физической симуляции
+            medalBody.position.copy(medalMesh.position); // Обновление позиции медали
 
-              // Обработка событий гироскопа
-              if (window.DeviceOrientationEvent) {
-                window.addEventListener("deviceorientation", (event) => {
-                  const gamma = event.gamma / 100;
-                  const beta = event.beta / 100;
-                  text.textContent = ` b = ${beta} g = ${gamma}`;
+            renderer.render(scene, camera);
+          }
 
-                  // Применяем данные гироскопа к физике модели
-                  medalBody.position.set(2 * gamma, 2 * beta, 0);
-                });
-
-                function animate() {
-                  requestAnimationFrame(animate);
-
-                  medalMesh.position.copy(medalBody.position);
-                }
-                animate();
-              }
-            }
-          );
+          animate();
         }
       );
 
-      function animate() {
-        requestAnimationFrame(animate);
-        // Обновляем физику
-        world.step(1 / 60);
-
-        // Обновление Three.js сцены
-        renderer.render(scene, camera);
-      }
-
-      animate();
-
-      //   //---------------------------------------- Гибкая веревка (это будет невидимый отрезок для физики)---------------------------------
-      //   const ropeShape = new CANNON.Cylinder(0.1, 0.1, 5, 20);
-      //   const ropeBody = new CANNON.Body({ mass: 0 });
-      //   ropeBody.addShape(ropeShape);
-      //   ropeBody.position.set(0, 0, 0);
-      //   ropeBody.quaternion.setFromAxisAngle(
-      //     new CANNON.Vec3(1, 0, 0),
-      //     Math.PI / 2
-      //   );
-
-      //   // -------------------------------------------------------Создание твердого тела для модели медальона---------------------------
-      //   const medalShape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
-      //   const medalBody = new CANNON.Body({ mass: 1 });
-      //   medalBody.addShape(medalShape);
-      //   medalBody.position.set(0, 5, 0);
-
-      //   const world = new CANNON.World();
-      //   world.gravity.set(0, -9.82, 0);
-      //   world.addBody(ropeBody);
-      //   world.addBody(medalBody);
-
-      //   //   ------------------------------------------------ LOADER GTFL-------------------------------------
-
-      //   const gltfLoader = new THREE.GLTFLoader();
-
-      //   //  ------------------------------------------------- Загрузка моделей-------------------------------------
-      //   gltfLoader.load(
-      //     "https://arweave.net/FKvkcdR-cER9_gprxecqwa91S6haq1gvchJo5pEfK-c",
-      //     function (gltf) {
-      //       const model = gltf.scene;
-      //       scene.add(model);
-      //       animate();
-      //       //   model.position.set(0, 0, 0);
-      //     }
-      //   );
-
-      //   const text = document.querySelector(".text");
-      //   function handleDeviceOrientation(event) {
-      //     const alpha = event.alpha; // угол поворота вокруг оси Z
-      //     const beta = event.beta; // угол поворота вокруг оси X
-      //     const gamma = event.gamma; // угол поворота вокруг оси Y
-      //     text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
-
-      //     // Применяем данные гироскопа к физике модели
-      //     const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы
-      //     medalBody.applyLocalForce(force, new CANNON.Vec3(0, 0, 0)); // Применяем силу к телу модели
-      //   }
-
-      //   // Обработка событий гироскопа
-      //   if (window.DeviceOrientationEvent) {
-      //     window.addEventListener("deviceorientation", handleDeviceOrientation);
-      //   }
-
-      //   // Анимационный цикл для отрисовки сцены
-      //   function animate(model) {
-      //     requestAnimationFrame(animate);
-      //     // Обновление Three.js сцены
-      //     renderer.render(scene, camera);
-      //     // Обновление Cannon.js физики
-      //     world.step(1 / 60);
-      //   }
-
-      //   // Запуск анимации
-      //   animate();
+      //   // Обновление размеров при изменении размеров окна
+      //   window.addEventListener("resize", () => {
+      //     camera.aspect = window.innerWidth / window.innerHeight;
+      //     camera.updateProjectionMatrix();
+      //     renderer.setSize(window.innerWidth, window.innerHeight);
+      //   });
     </script>
   </body>
 </html>

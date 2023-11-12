@@ -214,12 +214,16 @@
           medalBody.position.set(0, 7, 0);
           world.add(medalBody);
 
-          window.addEventListener("deveceorientation", (event) => {
-            var x = event.beta; // Угол наклона по оси X
-            var y = event.gamma; // Угол наклона по оси Y
-            var z = event.alpha; // Угол наклона по оси Z
+          window.addEventListener("deviceorientation", (event) => {
+            var x = event.beta / 100; // Угол наклона по оси X
+            console.log("x: ", x);
+            var y = event.gamma / 100; // Угол наклона по оси Y
+            console.log("y : ", y);
+            var z = event.alpha / 100; // Угол наклона по оси Z
+            console.log("z: ", z);
 
             text.textContent = `a = ${x} , b = ${y}, g = ${z}`;
+            console.log("text: ", text);
 
             medalBody.position.set(x, y, z);
           });
@@ -246,6 +250,8 @@
           new CANNON.Vec3(1, 0, 0),
           -Math.PI / 2
         );
+
+        plane.position.set(0, -5, 0);
         scene.add(plane);
 
         // скелет плоскости
@@ -255,10 +261,12 @@
         const groundShape = new CANNON.Plane(100, 100);
         groundBody.addShape(groundShape);
         console.log("groundBody: ", groundBody);
+
         groundBody.quaternion.setFromAxisAngle(
           new CANNON.Vec3(1, 0, 0),
           -Math.PI / 2
         ); //Поворачиваем в горизонтальное положение
+        groundBody.position.set(0, -5, 0);
         world.addBody(groundBody);
 
         //OrbitControls

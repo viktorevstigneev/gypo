@@ -215,14 +215,9 @@
           world.add(medalBody);
 
           const calculateZpos = (beta, z) => {
-            if (beta < 0.09) {
-              return z - beta / 1000;
-            }
-            if (beta > 0.09) {
-              return z + beta / 1000;
-            }
-
             if (beta > 0 && beta < 0.085) {
+              return 0;
+            } else {
               return beta;
             }
           };
@@ -247,7 +242,7 @@
             }, calculateZpos(beta, z) = ${calculateZpos(beta, z)}`;
             console.log("text: ", text);
 
-            medalBody.position.set(x + gamma / 1000, y, beta/20);
+            medalBody.position.set(x + gamma / 1000, y, calculateZpos(beta, z));
 
             // medalBody.quaternion.setFromAxisAngle(
             //   new CANNON.Vec3(x, y, z),

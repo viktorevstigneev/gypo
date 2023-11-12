@@ -38,7 +38,7 @@
         0.1,
         100
       );
-      camera.position.z = 4;
+      camera.position.z = 9;
 
       //   -----------------------------------------RENDERER----------------------------
       const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -107,7 +107,7 @@
         const alpha = event.alpha; // угол поворота вокруг оси Z
         const beta = event.beta; // угол поворота вокруг оси X
         const gamma = event.gamma; // угол поворота вокруг оси Y
-        //     text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
+        text.textContent = `a = ${alpha} b = ${beta} g = ${gamma}`;
 
         // Применяем данные гироскопа к физике модели
         const force = new CANNON.Vec3(gamma / 100, beta / 100, 0); // Например, используем углы наклона для создания силы

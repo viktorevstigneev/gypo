@@ -74,7 +74,6 @@
           0.9,
           100
         );
-        
 
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x404040);
@@ -128,6 +127,38 @@
         const quat = new THREE.Quaternion();
 
         const gltfLoader = new THREE.GLTFLoader();
+
+        gltfLoader.load(
+          "https://arweave.net/2xrlQq353EY494Q1MEty8OVZJOyQw-otkSvd1iOwXZY",
+          function (gltf) {
+            const model = gltf.scene;
+
+            model.position.set(window.innerWidth / 200, -4, 0);
+
+            model.scale.x = 0.5;
+            model.scale.y = 0.5;
+            model.scale.z = 0.5;
+
+            scene.add(model);
+          }
+        );
+
+        gltfLoader.load(
+          "https://arweave.net/YGIqWc0EN9SZHctlt9JechCmIP_AC3Y5MKkqQsqFxyA",
+          function (gltf) {
+            const model = gltf.scene;
+
+            model.position.set(-window.innerWidth / 200, -4, 0);
+            model.scale.x = 0.5;
+            model.scale.y = 0.5;
+            model.scale.z = 0.5;
+
+            scene.add(model);
+          }
+        );
+
+        //  531 - 100%
+        //  x - 10%
 
         //house
         gltfLoader.load(
@@ -233,7 +264,7 @@
         const ropeLength = 5;
         const ropeMass = 3;
         const ropePos = ball.position.clone();
-        ropePos.y += ballRadius-2 ;
+        ropePos.y += ballRadius - 2;
         console.log("ropePos: ", ropePos);
         console.log("ballRadius: ", ballRadius);
 

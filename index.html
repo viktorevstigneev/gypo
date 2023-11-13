@@ -329,6 +329,7 @@
         );
         pylon.castShadow = true;
         pylon.receiveShadow = true;
+        pylon.visible = false;
         pos.set(ropePos.x, pylonHeight + 0.2, ropePos.z - 0.5 * armLength);
         const arm = createParalellepiped(
           0.4,
@@ -341,6 +342,7 @@
         );
         arm.castShadow = true;
         arm.receiveShadow = true;
+        arm.visible = false;
 
         // Glue the rope extremes to the ball and the arm
         const influence = 1;
@@ -439,7 +441,9 @@
           var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
           var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
 
-          armMovement = x + gamma / 1000;
+          armMovement = gamma / 1000;
+
+          document.querySelector(".info").textContent = `g = ${gamma}`;
         });
         window.addEventListener("keydown", function (event) {
           switch (event.keyCode) {

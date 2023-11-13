@@ -71,15 +71,15 @@
         camera = new THREE.PerspectiveCamera(
           75,
           window.innerWidth / window.innerHeight,
-          0.1,
+          0.9,
           100
         );
-        camera.position.z = 9;
+        
 
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x404040);
 
-        camera.position.set(0, 0, 5);
+        camera.position.set(0, 0, 8);
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -186,10 +186,10 @@
 
         // Ball
         const ballMass = 1.2;
-        const ballRadius = 0.6;
+        const ballRadius = 3.3;
 
         const ball = new THREE.Mesh(
-          new THREE.SphereGeometry(ballRadius, 10, 10),
+          new THREE.SphereGeometry(ballRadius, 20, 20),
           new THREE.MeshPhongMaterial({ color: 0x202020 })
         );
         ball.castShadow = true;
@@ -233,7 +233,7 @@
         const ropeLength = 5;
         const ropeMass = 3;
         const ropePos = ball.position.clone();
-        ropePos.y += ballRadius + 0.5;
+        ropePos.y += ballRadius-2 ;
         console.log("ropePos: ", ropePos);
         console.log("ballRadius: ", ballRadius);
 

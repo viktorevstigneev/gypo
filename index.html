@@ -217,14 +217,6 @@
             scene.add(model);
             console.log("model: ", model);
 
-            // function animate() {
-            //   requestAnimationFrame(animate);
-
-            //   model.position.set(ball.position.clone());
-            //   // model.quaternion.set(ball.quaternion.clone());
-            //   renderer.render(scene, camera);
-            // }
-            // animate();
           }
         );
         // Wall
@@ -524,6 +516,8 @@
         }
 
         rope.geometry.attributes.position.needsUpdate = true;
+
+        // ball.position;
 
         // Update rigid bodies
         for (let i = 0, il = rigidBodies.length; i < il; i++) {

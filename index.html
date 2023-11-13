@@ -87,7 +87,7 @@
         renderer.shadowMap.enabled = true;
         container.appendChild(renderer.domElement);
         //OrbitControls
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        // controls = new THREE.OrbitControls(camera, renderer.domElement);
 
         textureLoader = new THREE.TextureLoader();
 
@@ -493,7 +493,7 @@
 
       function animate() {
         requestAnimationFrame(animate);
-        controls.update();
+        // controls.update();
         render();
       }
 

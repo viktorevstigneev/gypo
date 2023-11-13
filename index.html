@@ -243,8 +243,8 @@
 
         const arm = createParalellepiped(0, 6, 0, 0, pos, quat, baseMaterial);
   
-        arm.castShadow = true;
-        arm.receiveShadow = true;
+        // arm.castShadow = true;
+        // arm.receiveShadow = true;
         // arm.visible = false;
 
         //---------------------------------------CONNECTING OBJ-----------------------------------------
@@ -252,7 +252,7 @@
 
         ropeSoftBody.appendAnchor(
           0,
-          medal.userData.physicsBody,
+          medal.scene.userData.physicsBody,
           true,
           influence
         );
@@ -340,7 +340,7 @@
       function render() {
         const deltaTime = clock.getDelta();
 
-        // updatePhysics(deltaTime);
+        updatePhysics(deltaTime);
 
         renderer.render(scene, camera);
       }
@@ -351,10 +351,12 @@
         physicsWorld.stepSimulation(deltaTime, 10);
 
         // Update rope
-        const softBody = rope.userData.physicsBody;
-        const ropePositions = rope.geometry.attributes.position.array;
-        const numVerts = ropePositions.length / 3;
-        const nodes = softBody.get_m_nodes();
+        const softBody = rope?.userData.physicsBody;
+       
+        const ropePositions = rope?.geometry.attributes.position.array;
+        const numVerts = ropePositions?.length / 3;
+      
+        const nodes = softBody?.get_m_nodes();
         let indexFloat = 0;
 
         for (let i = 0; i < numVerts; i++) {
@@ -380,6 +382,9 @@
             objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
           }
         }
+
+
+   
       }
     </script>
   </body>

@@ -517,7 +517,15 @@
             currentVelocity?.z() + averageAcceleration.z()
           );
           medalBody.setLinearVelocity(newVelocity);
-          m1Body.setLinearVelocity(newVelocity);
+
+          // Применение ускорения к медали
+          var currentVelocity1 = m1Body?.getLinearVelocity();
+          var newVelocity1 = new Ammo.btVector3(
+            currentVelocity1?.x() + averageAcceleration.x(),
+            currentVelocity1?.y(),
+            currentVelocity1?.z() + averageAcceleration.z()
+          );
+          m1Body.setLinearVelocity(newVelocity1);
 
           lastActivityTime = Date.now();
         });

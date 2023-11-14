@@ -343,6 +343,11 @@
         let maxAcceleration = 0.2; // Максимальное ускорение, можно настроить под свои потребности
         let dampingFactor = 1; // Фактор затухания, можно настроить под свои потребности
 
+        // Инициализация переменных
+        let initialPosition = new Ammo.btVector3(0, 0, 0); // Предположим, что изначальное положение медали находится в центре (0, 0, 0)
+        let idleThreshold = 3000; // Порог бездействия, например, 3 секунды
+        let lastActivityTime = Date.now(); // Время последнего действия
+
         window.addEventListener("deviceorientation", (event) => {
           let gyroscopeData = {
             alpha: event.alpha,
@@ -374,7 +379,41 @@
             currentVelocity?.z() + averageAcceleration.z()
           );
           medalBody.setLinearVelocity(newVelocity);
+
+          lastActivityTime = Date.now();
         });
+
+        // ---------------------------------------MEDAL RETURN BACK-----------------------------
+        // Функция для проверки бездействия и возвращения медали в исходное положение
+        function checkIdleAndReturnToInitial() {
+          if (Date.now() - lastActivityTime > idleThreshold) {
+            // Медаль не трогали в течение достаточного времени, возвращаем её в исходное положение
+
+            var currentPosition = medalBody.getWorldTransform().getOrigin();
+
+            // Вычисляем ускорение, направленное к исходной позиции
+            var accelerationToInitial = new Ammo.btVector3(
+              (initialPosition.x() - currentPosition.x()) * 0.1, // Направляем ускорение к исходной позиции с учетом плавного изменения
+              (initialPosition.y() - currentPosition.y()) * 0.1,
+              (initialPosition.z() - currentPosition.z()) * 0.1
+            );
+
+            // Применяем ускорение к медали
+            var currentVelocity = medalBody.getLinearVelocity();
+            var newVelocity = new Ammo.btVector3(
+              currentVelocity.x() + accelerationToInitial.x(),
+              currentVelocity.y() + accelerationToInitial.y(),
+              currentVelocity.z() + accelerationToInitial.z()
+            );
+            medalBody.setLinearVelocity(newVelocity);
+          }
+
+          // Повторяем проверку через короткий интервал времени
+          setTimeout(checkIdleAndReturnToInitial, 1000);
+        }
+
+        // Запускаем проверку бездействия
+        checkIdleAndReturnToInitial();
       }
 
       function animate() {

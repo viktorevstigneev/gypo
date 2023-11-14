@@ -273,13 +273,12 @@
           var beta = Math.floor(event.beta); // Угол наклона по оси X
           var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
           var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-          document.querySelector(".text").textContent = `gamma = ${
-            gamma / 40
-          }`;
+          document.querySelector(".text").textContent = `gamma = ${gamma / 40}`;
+          
           let x = medal.scene.position.x;
           let y = medal.scene.position.y;
           let z = medal.scene.position.z;
-          medal.scene.position.set(x + gamma / 40, y, z);
+          medal.scene.setAngularVelocity(new Ammo.btVector3(gyroscopeData.gamma, gyroscopeData.beta, gyroscopeData.alpha));
         });
 
         // --------------------------------------------HOUSE AND ARM ------------------------------------------
@@ -378,6 +377,14 @@
         if (rope) {
           rope.geometry.attributes.position.needsUpdate = true;
         }
+
+        // if (medal) {
+        //   const nodes = softBody?.get_m_nodes();
+        //   let indexFloat = 0;
+        //   const node = nodes.at(numVerts - 1);
+        //   const nodePos = node.get_m_x();
+        //   medal.scene.position.set(nodePos.x(), nodePos.y(), nodePos.z());
+        // }
 
         // Update rigid bodies
         for (let i = 0, il = rigidBodies.length; i < il; i++) {

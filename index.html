@@ -378,7 +378,7 @@
       function updatePhysics(deltaTime) {
         // Hinge control
         // Step world
-        physicsWorld.stepSimulation(deltaTime, 10);
+        physicsWorld.stepSimulation(deltaTime, 60);
 
         // Update rope
         const softBody = rope?.userData.physicsBody;

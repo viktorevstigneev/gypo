@@ -167,9 +167,26 @@
         medal.scene.userData.physicsBody.setFriction(0.5);
 
         // -------------------------------- HOUSE -----------------------------------------------
+
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load(
+          "https://arweave.net/XnXv1vZS_IW5UaoHzuTSxjntpu2XXNQKa3PAXEgBOCY"
+        );
+
         house = await loadModel(
           "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM"
         );
+
+        house.scene.traverse((child) => {
+          if (child.isMesh) {
+            child.material.map = texture;
+          }
+        });
+
+        const boxWidth = 7.12;
+        const diff = window.innerWidth / boxWidth;
+        house.scene.scale.x = diff / 50;
+        house.scene.scale.z = diff / 40;
 
         scene.add(house.scene);
 
@@ -276,7 +293,7 @@
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
 
-        pos.set(-6, 0, 0);
+        pos.set(-window.innerWidth / 7.12/12, 0, 0);
         quat.set(0, 0, -0.7, 1);
         const ground3 = createParalellepiped(
           10,
@@ -288,7 +305,7 @@
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
 
-        pos.set(6, 0, 0);
+        pos.set(window.innerWidth / 7.12/12, 0, 0);
         quat.set(0, 0, 0.7, 1);
         const ground4 = createParalellepiped(
           10,
@@ -299,7 +316,6 @@
           quat,
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
-
 
         // ----------------------------------UP POINT -----------------------------------
 

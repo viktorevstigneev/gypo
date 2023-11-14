@@ -240,11 +240,11 @@
         ropeSoftBody.setActivationState(4);
 
         // ------------------------- BORDERS --------------------------------------
-        pos.set(0, -7, 0);
+        pos.set(0, -6, 0);
         quat.set(0, 0, 0, 1);
         const ground = createParalellepiped(
           10,
-          1,
+          0.1,
           10,
           0,
           pos,
@@ -252,11 +252,11 @@
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
 
-        pos.set(0, 7, 0);
+        pos.set(0, 6, 0);
         quat.set(0, 0, 0, 1);
         const ground1 = createParalellepiped(
           10,
-          1,
+          0.1,
           10,
           0,
           pos,
@@ -268,7 +268,7 @@
         quat.set(0.7, 0, 0, 1);
         const ground2 = createParalellepiped(
           10,
-          1,
+          0.1,
           10,
           0,
           pos,
@@ -276,11 +276,11 @@
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
 
-        pos.set(-5, 0, 0);
+        pos.set(-4, 0, 0);
         quat.set(0, 0, -0.7, 1);
         const ground3 = createParalellepiped(
           10,
-          1,
+          0.1,
           10,
           0,
           pos,
@@ -288,11 +288,11 @@
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
 
-        pos.set(5, 0, 0);
+        pos.set(4, 0, 0);
         quat.set(0, 0, 0.7, 1);
         const ground4 = createParalellepiped(
           10,
-          1,
+          0.1,
           10,
           0,
           pos,

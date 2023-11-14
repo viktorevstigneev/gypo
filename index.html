@@ -160,6 +160,9 @@
         quat.set(0, 0, 0, 1);
 
         createRigidBody(medal.scene, medalShape, medalMass, pos, quat, true);
+        medal.scene.scale.x = 0.635;
+        medal.scene.scale.y = 0.635;
+        medal.scene.scale.z = 0.635;
         medal.scene.userData.physicsBody.setFriction(0.5);
 
         // ------------------------------------------------ROPE----------------------------------------

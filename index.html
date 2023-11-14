@@ -274,11 +274,11 @@
           var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
           var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
           document.querySelector(".text").textContent = `gamma = ${gamma / 40}`;
-          
+
           let x = medal.scene.position.x;
           let y = medal.scene.position.y;
           let z = medal.scene.position.z;
-          medal.scene.setAngularVelocity(new Ammo.btVector3(gyroscopeData.gamma, gyroscopeData.beta, gyroscopeData.alpha));
+          medal.scene.setAngularVelocity(new Ammo.btVector3(gamma / 40, y, z));
         });
 
         // --------------------------------------------HOUSE AND ARM ------------------------------------------

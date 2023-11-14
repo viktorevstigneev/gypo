@@ -145,7 +145,7 @@
         const gltfLoader = new THREE.GLTFLoader();
 
         // ------------------------------------------MEDAL -------------------
-        const medalMass = 4.2;
+        const medalMass = 3.2;
         const medalRadius = 3.3;
 
         medal = await loadModel(
@@ -336,7 +336,7 @@
 
       function initInput() {
         window.addEventListener("deviceorientation", (event) => {
-          var gyroscopeData = {
+          let gyroscopeData = {
             alpha: event.alpha,
             beta: event.beta,
             gamma: event.gamma,
@@ -344,13 +344,13 @@
 
           // Использование данных гироскопа для изменения положения медали
           // Например, если у тебя есть объект medalBody
-          var currentPosition = medalBody.getWorldTransform().getOrigin();
-          var newPosition = new Ammo.btVector3(
-            currentPosition.x() + gyroscopeData.beta,
-            currentPosition.y() + gyroscopeData.gamma,
-            currentPosition.z() + gyroscopeData.alpha
+          let currentPosition = medalBody?.getWorldTransform().getOrigin();
+          let newPosition = new Ammo.btVector3(
+            currentPosition?.x() + gyroscopeData.beta,
+            currentPosition?.y() + gyroscopeData.gamma,
+            currentPosition?.z() + gyroscopeData.alpha
           );
-          medalBody.getWorldTransform().setOrigin(newPosition);
+          medalBody?.getWorldTransform().setOrigin(newPosition);
         });
       }
 

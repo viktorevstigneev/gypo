@@ -449,9 +449,9 @@
             // Применяем ускорение к медали
             var currentVelocity = medalBody.getLinearVelocity();
             var newVelocity = new Ammo.btVector3(
-              currentVelocity.x() + accelerationToInitial.x(),
-              currentVelocity.y() + accelerationToInitial.y(),
-              currentVelocity.z() + accelerationToInitial.z()
+              accelerationToInitial.x(),
+              accelerationToInitial.y(),
+              accelerationToInitial.z()
             );
             medalBody.setLinearVelocity(newVelocity);
           }

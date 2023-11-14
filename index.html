@@ -205,38 +205,53 @@
         scene.add(rope);
 
         // ------------------------- BORDERS --------------------
-
         // Получение размеров экрана
         var screenWidth = window.innerWidth;
         var screenHeight = window.innerHeight;
 
-        // Создание плоскостей
-        var planeGeometryX = new THREE.PlaneGeometry(screenWidth, 10); // Плоскость по горизонтали (для верхней и нижней границ)
-        var planeGeometryY = new THREE.PlaneGeometry(10, screenHeight); // Плоскость по вертикали (для левой и правой границ)
-        var planeMaterial = new THREE.MeshBasicMaterial({
-          color: 0x000000,
-          side: THREE.DoubleSide,
-        }); // Материал для плоскости, можно выбрать свой
+        // Создание стеновых тел
+        var wallShapeX = new Ammo.btBoxShape(
+          new Ammo.btVector3(screenWidth / 2, 5, 5)
+        ); // Горизонтальная стена
+        var wallShapeY = new Ammo.btBoxShape(
+          new Ammo.btVector3(5, screenHeight / 2, 5)
+        ); // Вертикальная стена
 
-        // Создание мешей плоскостей
-        var planeTop = new THREE.Mesh(planeGeometryX, planeMaterial);
-        var planeBottom = new THREE.Mesh(planeGeometryX, planeMaterial);
-        var planeLeft = new THREE.Mesh(planeGeometryY, planeMaterial);
-        var planeRight = new THREE.Mesh(planeGeometryY, planeMaterial);
+        // Создание тел для стен
+        var wallTransform = new Ammo.btTransform();
+        wallTransform.setIdentity();
 
-        // Расположение плоскостей по границам экрана
-        planeTop.position.set(0, screenHeight / 2, 0); // Плоскость сверху
-        planeBottom.position.set(0, -screenHeight / 2, 0); // Плоскость снизу
-        planeLeft.position.set(-screenWidth / 2, 0, 0); // Плоскость слева
-        planeRight.position.set(screenWidth / 2, 0, 0); // Плоскость справа
+        // Позиционирование стен
+        wallTransform.setOrigin(new Ammo.btVector3(0, screenHeight / 2, 0)); // Сверху
+        var wallTop = createPlaneBody(wallShapeX, wallTransform, 0); // Создание тела для стены верхней границы
 
-        // Добавление плоскостей к сцене
+        wallTransform.setOrigin(new Ammo.btVector3(0, -screenHeight / 2, 0)); // Снизу
+        var wallBottom = createPlaneBody(wallShapeX, wallTransform, 0); // Создание тела для стены нижней границы
 
-        scene.add(planeTop);
+        wallTransform.setOrigin(new Ammo.btVector3(-screenWidth / 2, 0, 0)); // Слева
+        var wallLeft = createPlaneBody(wallShapeY, wallTransform, 0); // Создание тела для стены левой границы
 
-        scene.add(planeBottom);
-        scene.add(planeLeft);
-        scene.add(planeRight);
+        wallTransform.setOrigin(new Ammo.btVector3(screenWidth / 2, 0, 0)); // Справа
+        var wallRight = createPlaneBody(wallShapeY, wallTransform, 0); // Создание тела для стены правой границы
+
+        // Функция для создания тела в мире физики
+        function createPlaneBody(shape, transform, mass) {
+          var localInertia = new Ammo.btVector3(0, 0, 0);
+          shape.calculateLocalInertia(mass, localInertia);
+
+          var motionState = new Ammo.btDefaultMotionState(transform);
+          var rbInfo = new Ammo.btRigidBodyConstructionInfo(
+            mass,
+            motionState,
+            shape,
+            localInertia
+          );
+          var body = new Ammo.btRigidBody(rbInfo);
+
+          physicsWorld.addRigidBody(body);
+
+          return body;
+        }
 
         // -----------------------------------------ROPE PHISICS ------------------
         const softBodyHelpers = new Ammo.btSoftBodyHelpers();

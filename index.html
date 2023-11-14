@@ -340,7 +340,7 @@
       function initInput() {
         // Инициализация переменных для скользящего среднего
         let averageAcceleration = new Ammo.btVector3(0, 0, 0);
-        let maxAcceleration = 1; // Максимальное ускорение, можно настроить под свои потребности
+        let maxAcceleration = 0.1; // Максимальное ускорение, можно настроить под свои потребности
         let dampingFactor = 0.95; // Фактор затухания, можно настроить под свои потребности
 
         window.addEventListener("deviceorientation", (event) => {
@@ -352,9 +352,9 @@
 
           // Применение скользящего среднего
           var newAcceleration = new Ammo.btVector3(
-            gyroscopeData.beta,
             gyroscopeData.gamma,
-            gyroscopeData.alpha
+            gyroscopeData.alpha,
+            gyroscopeData.beta
           );
           averageAcceleration.op_mul(dampingFactor);
           averageAcceleration.op_add(newAcceleration);

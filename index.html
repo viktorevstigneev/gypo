@@ -145,7 +145,7 @@
         const gltfLoader = new THREE.GLTFLoader();
 
         // ------------------------------------------MEDAL -------------------
-        const medalMass = 1.2;
+        const medalMass = 6.2;
         const medalRadius = 3.3;
 
         medal = await loadModel(
@@ -344,7 +344,7 @@
           let x = medal?.scene.position.x;
           let y = medal?.scene.position.y;
           let z = medal?.scene.position.z;
-          medalBody?.setAngularVelocity(new Ammo.btVector3(gamma / 400, y, z));
+          medalBody?.setAngularVelocity(new Ammo.btVector3(gamma / 400, 0, 0));
         });
       }
 

@@ -338,6 +338,12 @@
       }
 
       function initInput() {
+        // Инициализация переменных для скользящего среднего
+        let averageBeta = 0;
+        let averageGamma = 0;
+        let averageAlpha = 0;
+        let smoothingFactor = 0.9; // Фактор сглаживания, можно настроить под свои потребности
+
         window.addEventListener("deviceorientation", (event) => {
           let gyroscopeData = {
             alpha: event.alpha,
@@ -345,20 +351,35 @@
             gamma: event.gamma,
           };
 
-          let currentPosition = medalBody.getWorldTransform().getOrigin();
+          // Применение скользящего среднего
+          averageAlpha =
+            averageAlpha * smoothingFactor +
+            gyroscopeData.alpha * (1 - smoothingFactor);
+          averageBeta =
+            averageBeta * smoothingFactor +
+            gyroscopeData.beta * (1 - smoothingFactor);
+          averageGamma =
+            averageGamma * smoothingFactor +
+            gyroscopeData.gamma * (1 - smoothingFactor);
+
+          let currentPosition = medalBody?.getWorldTransform().getOrigin();
+
           let targetPosition = new Ammo.btVector3(
-            currentPosition.x() + gyroscopeData.gamma,
-            currentPosition.y() + gyroscopeData.alpha,
-            currentPosition.z() + gyroscopeData.beta
+            currentPosition?.x() + averageGamma,
+            currentPosition?.y() + averageAlpha,
+            currentPosition?.z() + averageBeta
           );
 
           // Линейная интерполяция (lerp) для плавного перемещения
           let lerpFactor = 0.002; // Фактор интерполяции, можно настроить под свои потребности
           let lerpFactorForZ = 0.001; // Фактор интерполяции, можно настроить под свои потребности
+          
           let newPosition = new Ammo.btVector3(
-            currentPosition.x() + (targetPosition.x() - currentPosition.x()) * lerpFactor,
-            currentPosition.y(),
-            currentPosition.z() + (targetPosition.z() - currentPosition.z()) * lerpFactorForZ
+            currentPosition?.x() +
+              (targetPosition.x() - currentPosition?.x()) * lerpFactor,
+            currentPosition?.y(),
+            currentPosition?.z() +
+              (targetPosition.z() - currentPosition?.z()) * lerpFactorForZ
           );
           medalBody?.getWorldTransform().setOrigin(newPosition);
         });

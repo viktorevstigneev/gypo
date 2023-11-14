@@ -355,8 +355,7 @@
             currentPosition.x() +
               (targetPosition.x() - currentPosition.x()) * lerpFactor,
             currentPosition.y(),
-            currentPosition.z() +
-              (targetPosition.z() - currentPosition.z()) * lerpFactor
+            currentPosition.z()
           );
           medalBody?.getWorldTransform().setOrigin(newPosition);
         });

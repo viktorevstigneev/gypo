@@ -145,7 +145,7 @@
         const gltfLoader = new THREE.GLTFLoader();
 
         // ------------------------------------------MEDAL -------------------
-        const medalMass = 65.2;
+        const medalMass = 25.2;
         const medalRadius = 3.3;
 
         medal = await loadModel(
@@ -341,7 +341,7 @@
         // Инициализация переменных для скользящего среднего
         let averageAcceleration = new Ammo.btVector3(0, 0, 0);
         let maxAcceleration = 0.1; // Максимальное ускорение, можно настроить под свои потребности
-        let dampingFactor = 4; // Фактор затухания, можно настроить под свои потребности
+        let dampingFactor = 0; // Фактор затухания, можно настроить под свои потребности
 
         window.addEventListener("deviceorientation", (event) => {
           let gyroscopeData = {

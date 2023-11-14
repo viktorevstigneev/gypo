@@ -188,12 +188,13 @@
           medalMass,
           pos,
           quat,
-          medalBody
+          true
         );
         medal.scene.scale.x = 0.635;
         medal.scene.scale.y = 0.635;
         medal.scene.scale.z = 0.635;
         medal.scene.userData.physicsBody.setFriction(0.5);
+        console.log("medal: ", medalBody && medalBody);
 
         // -------------------------------- HOUSE -----------------------------------------------
 
@@ -434,7 +435,7 @@
         mass,
         pos,
         quat,
-        bodyVar
+        isModel
       ) {
         threeObject.position.copy(pos);
         threeObject.quaternion.copy(quat);
@@ -471,7 +472,9 @@
 
         physicsWorld.addRigidBody(body);
 
-        bodyVar = body;
+        if (isModel) {
+          medalBody = body;
+        }
       }
 
       function initInput() {

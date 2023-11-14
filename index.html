@@ -439,6 +439,7 @@
               currentVelocity.z() + accelerationToInitial.z()
             );
             medalBody.setLinearVelocity(newVelocity);
+            medalBody.getWorldTransform().setOrigin(newVelocity);
           }
 
           // Повторяем проверку через короткий интервал времени

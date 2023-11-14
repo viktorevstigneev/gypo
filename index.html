@@ -344,8 +344,8 @@
 
           let currentPosition = medalBody.getWorldTransform().getOrigin();
           let targetPosition = new Ammo.btVector3(
-            currentPosition.x() + gyroscopeData.beta,
-            currentPosition.y() + gyroscopeData.gamma,
+            currentPosition.x() + gyroscopeData.gamma,
+            currentPosition.y() + gyroscopeData.beta,
             currentPosition.z() + gyroscopeData.alpha
           );
 

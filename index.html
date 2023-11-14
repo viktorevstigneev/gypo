@@ -342,13 +342,22 @@
             gamma: event.gamma,
           };
 
-          // Использование данных гироскопа для изменения положения медали
-          // Например, если у тебя есть объект medalBody
-          let currentPosition = medalBody?.getWorldTransform().getOrigin();
+          let currentPosition = medalBody.getWorldTransform().getOrigin();
+          let targetPosition = new Ammo.btVector3(
+            currentPosition.x() + gyroscopeData.beta,
+            currentPosition.y() + gyroscopeData.gamma,
+            currentPosition.z() + gyroscopeData.alpha
+          );
+
+          // Линейная интерполяция (lerp) для плавного перемещения
+          let lerpFactor = 0.1; // Фактор интерполяции, можно настроить под свои потребности
           let newPosition = new Ammo.btVector3(
-            currentPosition?.x() + gyroscopeData.beta,
-            currentPosition?.y() + gyroscopeData.gamma,
-            currentPosition?.z() + gyroscopeData.alpha
+            currentPosition.x() +
+              (targetPosition.x() - currentPosition.x()) * lerpFactor,
+            currentPosition.y() +
+              (targetPosition.y() - currentPosition.y()) * lerpFactor,
+            currentPosition.z() +
+              (targetPosition.z() - currentPosition.z()) * lerpFactor
           );
           medalBody?.getWorldTransform().setOrigin(newPosition);
         });

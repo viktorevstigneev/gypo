@@ -53,6 +53,7 @@
       let transformAux1;
       let medal;
       let medalBody;
+      let house;
 
       Ammo().then(function (AmmoLib) {
         Ammo = AmmoLib;
@@ -165,6 +166,13 @@
         medal.scene.scale.z = 0.635;
         medal.scene.userData.physicsBody.setFriction(0.5);
 
+        // -------------------------------- HOUSE -----------------------------------------------
+        house = await loadModel(
+          "https://arweave.net/y92G01mL2GeNwmD-9R21-BSXN9QKeWkMWK73QcDZyGM"
+        );
+
+        scene.add(house.scene);
+
         // ------------------------------------------------ROPE----------------------------------------
         const ropeNumSegments = 10;
         const ropeLength = 5;
@@ -204,55 +212,6 @@
         rope.receiveShadow = true;
         scene.add(rope);
 
-        // ------------------------- BORDERS --------------------
-        // Получение размеров экрана
-        var screenWidth = window.innerWidth;
-        var screenHeight = window.innerHeight;
-
-        // Создание стеновых тел
-        var wallShapeX = new Ammo.btBoxShape(
-          new Ammo.btVector3(screenWidth / 2, 5, 5)
-        ); // Горизонтальная стена
-        var wallShapeY = new Ammo.btBoxShape(
-          new Ammo.btVector3(5, screenHeight / 2, 5)
-        ); // Вертикальная стена
-
-        // Создание тел для стен
-        var wallTransform = new Ammo.btTransform();
-        wallTransform.setIdentity();
-
-        // Позиционирование стен
-        wallTransform.setOrigin(new Ammo.btVector3(0, screenHeight / 2, 0)); // Сверху
-        var wallTop = createPlaneBody(wallShapeX, wallTransform, 0); // Создание тела для стены верхней границы
-
-        wallTransform.setOrigin(new Ammo.btVector3(0, -screenHeight / 2, 0)); // Снизу
-        var wallBottom = createPlaneBody(wallShapeX, wallTransform, 0); // Создание тела для стены нижней границы
-
-        wallTransform.setOrigin(new Ammo.btVector3(-screenWidth / 2, 0, 0)); // Слева
-        var wallLeft = createPlaneBody(wallShapeY, wallTransform, 0); // Создание тела для стены левой границы
-
-        wallTransform.setOrigin(new Ammo.btVector3(screenWidth / 2, 0, 0)); // Справа
-        var wallRight = createPlaneBody(wallShapeY, wallTransform, 0); // Создание тела для стены правой границы
-
-        // Функция для создания тела в мире физики
-        function createPlaneBody(shape, transform, mass) {
-          var localInertia = new Ammo.btVector3(0, 0, 0);
-          shape.calculateLocalInertia(mass, localInertia);
-
-          var motionState = new Ammo.btDefaultMotionState(transform);
-          var rbInfo = new Ammo.btRigidBodyConstructionInfo(
-            mass,
-            motionState,
-            shape,
-            localInertia
-          );
-          var body = new Ammo.btRigidBody(rbInfo);
-
-          physicsWorld.addRigidBody(body);
-
-          return body;
-        }
-
         // -----------------------------------------ROPE PHISICS ------------------
         const softBodyHelpers = new Ammo.btSoftBodyHelpers();
         const ropeStart = new Ammo.btVector3(ropePos.x, ropePos.y, ropePos.z);
@@ -279,6 +238,68 @@
         rope.userData.physicsBody = ropeSoftBody;
         // Disable deactivation
         ropeSoftBody.setActivationState(4);
+
+        // ------------------------- BORDERS --------------------------------------
+        pos.set(0, -7, 0);
+        quat.set(0, 0, 0, 1);
+        const ground = createParalellepiped(
+          10,
+          1,
+          10,
+          0,
+          pos,
+          quat,
+          new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+
+        pos.set(0, 7, 0);
+        quat.set(0, 0, 0, 1);
+        const ground1 = createParalellepiped(
+          10,
+          1,
+          10,
+          0,
+          pos,
+          quat,
+          new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+
+        pos.set(0, 0, -5);
+        quat.set(0.7, 0, 0, 1);
+        const ground2 = createParalellepiped(
+          10,
+          1,
+          10,
+          0,
+          pos,
+          quat,
+          new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+
+        pos.set(-5, 0, 0);
+        quat.set(0, 0, -0.7, 1);
+        const ground3 = createParalellepiped(
+          10,
+          1,
+          10,
+          0,
+          pos,
+          quat,
+          new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+
+        pos.set(5, 0, 0);
+        quat.set(0, 0, 0.7, 1);
+        const ground4 = createParalellepiped(
+          10,
+          1,
+          10,
+          0,
+          pos,
+          quat,
+          new THREE.MeshPhongMaterial({ color: 0xffffff })
+        );
+
 
         // ----------------------------------UP POINT -----------------------------------
 

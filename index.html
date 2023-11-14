@@ -354,8 +354,7 @@
           let newPosition = new Ammo.btVector3(
             currentPosition.x() +
               (targetPosition.x() - currentPosition.x()) * lerpFactor,
-            currentPosition.y() +
-              (targetPosition.y() - currentPosition.y()) * lerpFactor,
+            currentPosition.y(),
             currentPosition.z() +
               (targetPosition.z() - currentPosition.z()) * lerpFactor
           );

@@ -393,14 +393,14 @@
 
             var newVelocity = new Ammo.btVector3(0, 0, 0);
             medalBody.setLinearVelocity(newVelocity);
-            // medalBody.getWorldTransform().setOrigin(newVelocity);
+            medalBody.getWorldTransform().setOrigin(newVelocity);
           }
 
-
+          // Повторяем проверку через короткий интервал времени
+          setTimeout(checkIdleAndReturnToInitial, 3000);
         }
 
-        // Повторяем проверку через короткий интервал времени
-        setInterval(checkIdleAndReturnToInitial, 3000);
+        checkIdleAndReturnToInitial();
       }
 
       function animate() {

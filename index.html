@@ -52,6 +52,7 @@
       let rope;
       let transformAux1;
       let medal;
+      let medalBody;
 
       Ammo().then(function (AmmoLib) {
         Ammo = AmmoLib;
@@ -158,7 +159,7 @@
         pos.set(0, 0, 0);
         quat.set(0, 0, 0, 1);
 
-        createRigidBody(medal.scene, medalShape, medalMass, pos, quat);
+        createRigidBody(medal.scene, medalShape, medalMass, pos, quat, true);
         medal.scene.userData.physicsBody.setFriction(0.5);
 
         // ------------------------------------------------ROPE----------------------------------------
@@ -269,18 +270,6 @@
           influence
         );
 
-        window.addEventListener("deviceorientation", (event) => {
-          var beta = Math.floor(event.beta); // Угол наклона по оси X
-          var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
-          var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-          document.querySelector(".text").textContent = `gamma = ${gamma / 40}`;
-
-          let x = medal.scene.position.x;
-          let y = medal.scene.position.y;
-          let z = medal.scene.position.z;
-          medal.scene.setAngularVelocity(new Ammo.btVector3(gamma / 40, y, z));
-        });
-
         // --------------------------------------------HOUSE AND ARM ------------------------------------------
         // const pivotA = new Ammo.btVector3(0,  0.5, 0);
         // const pivotB = new Ammo.btVector3(0, -0.2, - 0.5);
@@ -297,7 +286,14 @@
         // physicsWorld.addConstraint(hinge, true);
       }
 
-      function createRigidBody(threeObject, physicsShape, mass, pos, quat) {
+      function createRigidBody(
+        threeObject,
+        physicsShape,
+        mass,
+        pos,
+        quat,
+        isMedal
+      ) {
         threeObject.position.copy(pos);
         threeObject.quaternion.copy(quat);
 
@@ -332,10 +328,24 @@
         }
 
         physicsWorld.addRigidBody(body);
+
+        if (isMedal) {
+          medalBody = body;
+        }
       }
 
       function initInput() {
-        window.addEventListener("deviceorientation", function () {});
+        window.addEventListener("deviceorientation", (event) => {
+          var beta = Math.floor(event.beta); // Угол наклона по оси X
+          var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
+          var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
+          document.querySelector(".text").textContent = `gamma = ${gamma / 40}`;
+
+          let x = medal?.scene.position.x;
+          let y = medal?.scene.position.y;
+          let z = medal?.scene.position.z;
+          medalBody?.setAngularVelocity(new Ammo.btVector3(gamma / 40, y, z));
+        });
       }
 
       function animate() {

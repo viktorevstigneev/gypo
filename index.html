@@ -422,11 +422,23 @@
           if (Date.now() - lastActivityTime > idleThreshold) {
             // Медаль не трогали в течение достаточного времени, возвращаем её в исходное положение
 
-            // var currentPosition = medalBody.getWorldTransform().getOrigin();
+            var currentPosition = medalBody.getWorldTransform().getOrigin();
 
-            var newVelocity = new Ammo.btVector3(0, 0, 0);
+            // Вычисляем ускорение, направленное к исходной позиции
+            var accelerationToInitial = new Ammo.btVector3(
+              (initialPosition.x() - currentPosition.x()) * 0.1, // Направляем ускорение к исходной позиции с учетом плавного изменения
+              (initialPosition.y() - currentPosition.y()) * 0.1,
+              (initialPosition.z() - currentPosition.z()) * 0.1
+            );
+
+            // Применяем ускорение к медали
+            var currentVelocity = medalBody.getLinearVelocity();
+            var newVelocity = new Ammo.btVector3(
+              currentVelocity.x() + accelerationToInitial.x(),
+              currentVelocity.y() + accelerationToInitial.y(),
+              currentVelocity.z() + accelerationToInitial.z()
+            );
             medalBody.setLinearVelocity(newVelocity);
-            medalBody.getWorldTransform().setOrigin(newVelocity);
           }
 
           // Повторяем проверку через короткий интервал времени

@@ -202,8 +202,41 @@
         rope = new THREE.LineSegments(ropeGeometry, ropeMaterial);
         rope.castShadow = true;
         rope.receiveShadow = true;
-        console.log("rope: ", rope);
         scene.add(rope);
+
+        // ------------------------- BORDERS --------------------
+
+        // Получение размеров экрана
+        var screenWidth = window.innerWidth;
+        var screenHeight = window.innerHeight;
+
+        // Создание плоскостей
+        var planeGeometryX = new THREE.PlaneGeometry(screenWidth, 10); // Плоскость по горизонтали (для верхней и нижней границ)
+        var planeGeometryY = new THREE.PlaneGeometry(10, screenHeight); // Плоскость по вертикали (для левой и правой границ)
+        var planeMaterial = new THREE.MeshBasicMaterial({
+          color: 0x000000,
+          side: THREE.DoubleSide,
+        }); // Материал для плоскости, можно выбрать свой
+
+        // Создание мешей плоскостей
+        var planeTop = new THREE.Mesh(planeGeometryX, planeMaterial);
+        var planeBottom = new THREE.Mesh(planeGeometryX, planeMaterial);
+        var planeLeft = new THREE.Mesh(planeGeometryY, planeMaterial);
+        var planeRight = new THREE.Mesh(planeGeometryY, planeMaterial);
+
+        // Расположение плоскостей по границам экрана
+        planeTop.position.set(0, screenHeight / 2, 0); // Плоскость сверху
+        planeBottom.position.set(0, -screenHeight / 2, 0); // Плоскость снизу
+        planeLeft.position.set(-screenWidth / 2, 0, 0); // Плоскость слева
+        planeRight.position.set(screenWidth / 2, 0, 0); // Плоскость справа
+
+        // Добавление плоскостей к сцене
+
+        scene.add(planeTop);
+
+        scene.add(planeBottom);
+        scene.add(planeLeft);
+        scene.add(planeRight);
 
         // -----------------------------------------ROPE PHISICS ------------------
         const softBodyHelpers = new Ammo.btSoftBodyHelpers();

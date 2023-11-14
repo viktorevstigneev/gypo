@@ -336,15 +336,21 @@
 
       function initInput() {
         window.addEventListener("deviceorientation", (event) => {
-          var beta = Math.floor(event.beta); // Угол наклона по оси X
-          var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
-          var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-          document.querySelector(".text").textContent = `gamma = ${gamma / 40}`;
+          var gyroscopeData = {
+            alpha: event.alpha,
+            beta: event.beta,
+            gamma: event.gamma,
+          };
 
-          let x = medal?.scene.position.x;
-          let y = medal?.scene.position.y;
-          let z = medal?.scene.position.z;
-          medalBody?.setAngularVelocity(new Ammo.btVector3(gamma / 400, 0, 0));
+          // Использование данных гироскопа для изменения положения медали
+          // Например, если у тебя есть объект medalBody
+          var currentPosition = medalBody.getWorldTransform().getOrigin();
+          var newPosition = new Ammo.btVector3(
+            currentPosition.x() + gyroscopeData.beta,
+            currentPosition.y() + gyroscopeData.gamma,
+            currentPosition.z() + gyroscopeData.alpha
+          );
+          medalBody.getWorldTransform().setOrigin(newPosition);
         });
       }
 

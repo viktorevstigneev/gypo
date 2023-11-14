@@ -67,6 +67,8 @@
       // ---------------------------- INIT GRAPHICS -----------------------------
 
       function initGraphics() {
+
+
         container = document.getElementById("container");
 
         camera = new THREE.PerspectiveCamera(
@@ -162,6 +164,7 @@
         const ropePos = medal.scene.position.clone();
         console.log("ropePos: ", ropePos);
         ropePos.y += medalRadius - 2;
+    
 
         const segmentLength = ropeLength / ropeNumSegments;
         const ropeGeometry = new THREE.BufferGeometry();
@@ -241,8 +244,8 @@
 
         const baseMaterial = new THREE.MeshPhongMaterial({ color: 0x606060 });
 
-        const arm = createParalellepiped(0, 6, 0, 0, pos, quat, baseMaterial);
-  
+        const arm = createParalellepiped(0, 0, 0, 0, pos, quat, baseMaterial);
+
         // arm.castShadow = true;
         // arm.receiveShadow = true;
         // arm.visible = false;
@@ -352,10 +355,10 @@
 
         // Update rope
         const softBody = rope?.userData.physicsBody;
-       
+
         const ropePositions = rope?.geometry.attributes.position.array;
         const numVerts = ropePositions?.length / 3;
-      
+
         const nodes = softBody?.get_m_nodes();
         let indexFloat = 0;
 
@@ -367,7 +370,9 @@
           ropePositions[indexFloat++] = nodePos.z();
         }
 
-        rope.geometry.attributes.position.needsUpdate = true;
+        if (rope) {
+          rope.geometry.attributes.position.needsUpdate = true;
+        }
 
         // Update rigid bodies
         for (let i = 0, il = rigidBodies.length; i < il; i++) {
@@ -382,9 +387,6 @@
             objThree.quaternion.set(q.x(), q.y(), q.z(), q.w());
           }
         }
-
-
-   
       }
     </script>
   </body>

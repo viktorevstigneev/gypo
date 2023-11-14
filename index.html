@@ -351,10 +351,11 @@
 
           // Линейная интерполяция (lerp) для плавного перемещения
           let lerpFactor = 0.004; // Фактор интерполяции, можно настроить под свои потребности
+          let lerpFactorForZ = 0.001; // Фактор интерполяции, можно настроить под свои потребности
           let newPosition = new Ammo.btVector3(
             currentPosition.x() + (targetPosition.x() - currentPosition.x()) * lerpFactor,
             currentPosition.y(),
-            currentPosition.z() + (targetPosition.z() - currentPosition.z()) * lerpFactor
+            currentPosition.z() + (targetPosition.z() - currentPosition.z()) * lerpFactorForZ
           );
           medalBody?.getWorldTransform().setOrigin(newPosition);
         });

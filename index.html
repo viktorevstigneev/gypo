@@ -345,17 +345,16 @@
           let currentPosition = medalBody.getWorldTransform().getOrigin();
           let targetPosition = new Ammo.btVector3(
             currentPosition.x() + gyroscopeData.gamma,
-            currentPosition.y() + gyroscopeData.beta,
-            currentPosition.z() + gyroscopeData.alpha
+            currentPosition.y() + gyroscopeData.alpha,
+            currentPosition.z() + gyroscopeData.beta
           );
 
           // Линейная интерполяция (lerp) для плавного перемещения
           let lerpFactor = 0.004; // Фактор интерполяции, можно настроить под свои потребности
           let newPosition = new Ammo.btVector3(
-            currentPosition.x() +
-              (targetPosition.x() - currentPosition.x()) * lerpFactor,
+            currentPosition.x() + (targetPosition.x() - currentPosition.x()) * lerpFactor,
             currentPosition.y(),
-            currentPosition.z()
+            currentPosition.z() + (targetPosition.z() - currentPosition.z()) * lerpFactor
           );
           medalBody?.getWorldTransform().setOrigin(newPosition);
         });

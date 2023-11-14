@@ -15,9 +15,15 @@
       canvas {
         max-width: 100%;
       }
+
+      .text {
+        position: absolute;
+        font-size: 19px;
+      }
     </style>
   </head>
   <body>
+    <div class="text"></div>
     <div id="container"></div>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/ammo-node@1.0.0/ammo.min.js"></script> -->
@@ -67,8 +73,6 @@
       // ---------------------------- INIT GRAPHICS -----------------------------
 
       function initGraphics() {
-
-
         container = document.getElementById("container");
 
         camera = new THREE.PerspectiveCamera(
@@ -164,7 +168,6 @@
         const ropePos = medal.scene.position.clone();
         console.log("ropePos: ", ropePos);
         ropePos.y += medalRadius - 2;
-    
 
         const segmentLength = ropeLength / ropeNumSegments;
         const ropeGeometry = new THREE.BufferGeometry();
@@ -270,11 +273,13 @@
           var beta = Math.floor(event.beta); // Угол наклона по оси X
           var gamma = Math.floor(event.gamma); // Угол наклона по оси Y
           var alpha = Math.floor(event.alpha); // Угол наклона по оси Z
-
+          document.querySelector(".text").textContent = `gamma = ${
+            gamma / 40
+          }`;
           let x = medal.scene.position.x;
           let y = medal.scene.position.y;
           let z = medal.scene.position.z;
-          medal.scene.position.set(x + gamma / 400, y, z);
+          medal.scene.position.set(x + gamma / 40, y, z);
         });
 
         // --------------------------------------------HOUSE AND ARM ------------------------------------------

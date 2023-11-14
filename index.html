@@ -350,7 +350,7 @@
           );
 
           // Линейная интерполяция (lerp) для плавного перемещения
-          let lerpFactor = 0.04; // Фактор интерполяции, можно настроить под свои потребности
+          let lerpFactor = 0.004; // Фактор интерполяции, можно настроить под свои потребности
           let newPosition = new Ammo.btVector3(
             currentPosition.x() +
               (targetPosition.x() - currentPosition.x()) * lerpFactor,

@@ -20,10 +20,146 @@
         position: absolute;
         font-size: 19px;
       }
+
+      .loader {
+        background: #fff;
+        width: 100%;
+        height: 100%;
+      }
+
+      #main {
+        height: 40px;
+        width: 40px;
+        background: indianred;
+        border-radius: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 100;
+      }
+
+      .d {
+        background: #fff;
+        height: 14px;
+        width: 14px;
+        border-radius: 100%;
+        position: absolute;
+        margin: auto;
+      }
+
+      .ball-one {
+        top: 0;
+        left: 0;
+        right: 65px;
+        bottom: 65px;
+        animation: anim 2s infinite ease-in;
+      }
+
+      @keyframes anim {
+        0% {
+          background: skyblue;
+          right: 65px;
+          bottom: 65px;
+          z-index: 150;
+        }
+        33% {
+          right: -65px;
+          bottom: -65px;
+        }
+        66% {
+          width: 10px;
+          height: 10px;
+        }
+        99% {
+          right: 65px;
+          bottom: 65px;
+          height: 14px;
+          width: 14px;
+          z-index: 0;
+        }
+        100% {
+          background: skyblue;
+        }
+      }
+
+      .ball-two {
+        top: 0;
+        right: 0;
+        left: 65px;
+        bottom: 65px;
+        animation: anim-two 2s infinite ease-in;
+        animation-delay: 0.4s;
+      }
+
+      @keyframes anim-two {
+        0% {
+          background: skyblue;
+          left: 65px;
+          bottom: 65px;
+          z-index: 150;
+        }
+        33% {
+          left: -65px;
+          bottom: -65px;
+        }
+        66% {
+          width: 10px;
+          height: 10px;
+        }
+        99% {
+          left: 65px;
+          bottom: 65px;
+          height: 14px;
+          width: 14px;
+          z-index: 0;
+        }
+        100% {
+          background: skyblue;
+        }
+      }
+
+      .ball-three {
+        top: -65px;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        animation: anim-three 2s infinite ease-in;
+        animation-delay: 0.8s;
+      }
+
+      @keyframes anim-three {
+        0% {
+          background: skyblue;
+          top: -65px;
+          z-index: 150;
+        }
+        33% {
+          top: 65px;
+        }
+        66% {
+          width: 10px;
+          height: 10px;
+        }
+        99% {
+          top: -65px;
+          height: 14px;
+          width: 14px;
+          z-index: 0;
+        }
+        100% {
+          background: skyblue;
+        }
+      }
     </style>
   </head>
   <body>
-    <div class="text"></div>
+    <div class="loader">
+      <div id="main" class="d"></div>
+      <div class="ball-one d"></div>
+      <div class="ball-two d"></div>
+      <div class="ball-three d"></div>
+    </div>
     <div id="container"></div>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/ammo-node@1.0.0/ammo.min.js"></script> -->
@@ -32,6 +168,10 @@
     <script src="ammo.js"></script>
 
     <script type="module">
+      setTimeout(() => {
+        document.querySelector(".loader").style.display = "none";
+      }, 6000);
+
       // Graphics variables
       let container;
       let camera, controls, scene, renderer;
@@ -165,8 +305,7 @@
         pos.set(window.innerWidth / 200, 0, -2);
         quat.set(0, 0, 0, 1);
 
-        createRigidBody(m2.scene, m2Shape, 1, pos, quat, false, false,true);
-      
+        createRigidBody(m2.scene, m2Shape, 1, pos, quat, false, false, true);
 
         // ------------------------------------------------Model 1--------------------------
         let m1 = await loadModel(
@@ -186,8 +325,7 @@
         quat.set(0, 0, 0, 1);
 
         createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
-        console.log('m1Body: ', m1Body);
-
+        console.log("m1Body: ", m1Body);
 
         // ------------------------------------------MEDAL -------------------
         const medalMass = 25.2;
@@ -234,8 +372,6 @@
         house.scene.scale.z = diff / 40;
 
         scene.add(house.scene);
-
-      
 
         // ------------------------------------------------ROPE----------------------------------------
         const ropeNumSegments = 10;
@@ -375,8 +511,6 @@
           quat,
           new THREE.MeshPhongMaterial({ color: 0xffffff })
         );
-
-        
 
         ground.visible = false;
         ground1.visible = false;
@@ -551,7 +685,6 @@
           );
           m1Body.setLinearVelocity(newVelocity1);
 
-          
           // Применение ускорения к м2
           var currentVelocity2 = m2Body?.getLinearVelocity();
           var newVelocity2 = new Ammo.btVector3(

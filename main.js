@@ -477,7 +477,7 @@ function initInput() {
   window.addEventListener("deviceorientation", (event) => {
     let gyroscopeData = {
       alpha: event.alpha,
-      beta: event.beta - 90,
+      beta: Math.abs(event.beta) > 0 && Math.abs(event.beta) < 90 ? 0 : event.beta,
       gamma: event.gamma,
     };
 

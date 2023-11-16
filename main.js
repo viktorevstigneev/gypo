@@ -482,14 +482,14 @@ function initInput() {
     };
 
     // Применение скользящего среднего
-    if (Math.abs(beta) > 90) {
+    if (Math.abs(gyroscopeData.beta) > 90) {
       // Вычисляем ускорение и применяем его к медали
       newAcceleration = new Ammo.btVector3(
         gyroscopeData.gamma,
         gyroscopeData.alpha,
         gyroscopeData.beta
       );
-      
+
       averageAcceleration.op_mul(dampingFactor);
       averageAcceleration.op_add(newAcceleration);
     }

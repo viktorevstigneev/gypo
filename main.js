@@ -72,7 +72,7 @@ function initGraphics() {
   // renderer.physicallyCorrectLights = true;
   container.appendChild(renderer.domElement);
   //OrbitControls
-  // controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
 
   textureLoader = new THREE.TextureLoader();
 
@@ -206,24 +206,24 @@ async function createObjects() {
     new THREE.MeshPhongMaterial({ color: 0xffffff })
   );
 
-  pos.set(0, -5, 0);
+  pos.set(0, -5, 4);
   quat.set(0.7, 0, 0, 1);
   const ground5 = createParalellepiped(
     20,
     0.1,
-    10,
+    1,
     0,
     pos,
     quat,
     new THREE.MeshPhongMaterial({ color: 0xffffff })
   );
 
-  ground.visible = false;
-  ground1.visible = false;
-  ground2.visible = false;
-  ground3.visible = false;
-  ground4.visible = false;
-  ground5.visible = false;
+  // ground.visible = false;
+  // ground1.visible = false;
+  // ground2.visible = false;
+  // ground3.visible = false;
+  // ground4.visible = false;
+  // ground5.visible = false;
 
   // ------------------------------------------------Model 2--------------------------
   let m2 = await loadModel(document.querySelector(".m2_mesh").dataset.setting);

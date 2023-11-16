@@ -52,12 +52,16 @@ function init() {
 
 function initGraphics() {
   container = document.getElementById("container");
+  const containerWidth = container.clientWidth;
+  const containerHeight = container.clientHeight;
+  const aspect = containerWidth / containerHeight;
+  
 
   camera = new THREE.PerspectiveCamera(
-    75,
+    45,
     window.innerWidth / window.innerHeight,
-    0.9,
-    100
+    0.1,
+    1000
   );
 
   scene = new THREE.Scene();
@@ -145,184 +149,6 @@ async function createObjects() {
   const quat = new THREE.Quaternion();
 
   const gltfLoader = new THREE.GLTFLoader();
-
-  // ------------------------------------------------Model 2--------------------------
-  let m2 = await loadModel(document.querySelector(".m2_mesh").dataset.setting);
-
-  m2.scene.scale.x = 0.5;
-  m2.scene.scale.y = 0.5;
-  m2.scene.scale.z = 0.5;
-
-  m2.scene.position.set(window.innerWidth / 200, 1, -1);
-  scene.add(m2.scene);
-
-  let verticesM2 = m2.scene.children[0].geometry;
-
-  const m2Shape = createConvexShape(verticesM2);
-
-  pos.set(window.innerWidth / 200, 0, -2);
-  quat.set(0, 0, 0, 1);
-
-  createRigidBody(m2.scene, m2Shape, 1, pos, quat, false, false, true);
-
-  // // ------------------------------------------------Model 1--------------------------
-  let m1 = await loadModel(document.querySelector(".m1_mesh").dataset.setting);
-
-  m1.scene.scale.x = 0.5;
-  m1.scene.scale.y = 0.5;
-  m1.scene.scale.z = 0.5;
-
-  // ---------------------------------------------------- VARIANT 1 ---------------------------------------------
-
-  // m1.scene.position.set(-window.innerWidth / 200, -2, -0.5);
-  // scene.add(m1.scene);
-
-  // let vertices = m1.scene.children[0].geometry;
-
-  // const m1Shape = createConvexShape(vertices);
-
-  // pos.set(-window.innerWidth / 200, -2, -0.5);
-  // quat.set(0, 0, 0, 1);
-
-  // createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
-
-  // ---------------------------------------------------- VARIANT 2 ---------------------------------------------
-  let vertices = [];
-  m1.scene.traverse(function (child) {
-    if (child.isMesh) {
-      let geometry = child.geometry;
-      geometry.computeBoundingBox(); // Обновляем ограничивающий параллелепипед для получения вершин модели
-      let positionAttribute = geometry.attributes.position;
-      for (let i = 0; i < positionAttribute.count; i++) {
-        let point = new Ammo.btVector3(
-          positionAttribute.getX(i),
-          positionAttribute.getY(i),
-          positionAttribute.getZ(i)
-        );
-        vertices.push(point);
-      }
-    }
-  });
-
-  let m1Shape = new Ammo.btConvexHullShape();
-  for (let i = 0; i < vertices.length; i++) {
-    m1Shape.addPoint(vertices[i]);
-  }
-
-  pos.set(-window.innerWidth / 200, -2, -0.5);
-  quat.set(0, 0, 0, 1);
-
-  createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
-  // ------------------------------------------MEDAL -------------------
-  const medalMass = 25.2;
-  const medalRadius = 3.3;
-
-  medal = await loadModel(
-    document.querySelector(".ss_medal_mesh").dataset.setting
-  );
-
-  medal.castShadow = true;
-  medal.receiveShadow = true;
-  const medalShape = new Ammo.btSphereShape(medalRadius);
-  medalShape.setMargin(margin);
-  pos.set(0, 0, 0);
-  quat.set(0, 0, 0, 1);
-
-  createRigidBody(medal.scene, medalShape, medalMass, pos, quat, true);
-
-  medal.scene.scale.x = 0.635;
-  medal.scene.scale.y = 0.635;
-  medal.scene.scale.z = 0.635;
-  medal.scene.userData.physicsBody.setFriction(0.5);
-
-  // -------------------------------- HOUSE -----------------------------------------------
-
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load(
-    document.querySelector(".ss_box_albedo").dataset.setting
-  );
-
-  house = await loadModel(
-    document.querySelector(".ss_box_mesh").dataset.setting
-  );
-
-  house.scene.traverse((child) => {
-    if (child.isMesh) {
-      child.material.map = texture;
-    }
-  });
-
-  const boxWidth = 7.12;
-  const diff = window.innerWidth / boxWidth;
-  house.scene.scale.x = diff / 50;
-  house.scene.scale.z = diff / 40;
-
-  scene.add(house.scene);
-
-
-  // ------------------------------------------------ROPE----------------------------------------
-  const ropeNumSegments = 10;
-  const ropeLength = 5;
-  const ropeMass = 3;
-  const ropePos = medal.scene.position.clone();
-  console.log("ropePos: ", ropePos);
-  ropePos.y += medalRadius - 2;
-
-  const segmentLength = ropeLength / ropeNumSegments;
-  const ropeGeometry = new THREE.BufferGeometry();
-  const ropeMaterial = new THREE.LineBasicMaterial({ color: 0xd8c9b8 });
-  const ropePositions = [];
-  const ropeIndices = [];
-
-  for (let i = 0; i < ropeNumSegments + 1; i++) {
-    ropePositions.push(ropePos.x, ropePos.y + i * segmentLength, ropePos.z);
-  }
-
-  for (let i = 0; i < ropeNumSegments; i++) {
-    ropeIndices.push(i, i + 1);
-  }
-
-  ropeGeometry.setIndex(
-    new THREE.BufferAttribute(new Uint16Array(ropeIndices), 1)
-  );
-  ropeGeometry.setAttribute(
-    "position",
-    new THREE.BufferAttribute(new Float32Array(ropePositions), 3)
-  );
-  ropeGeometry.computeBoundingSphere();
-  rope = new THREE.LineSegments(ropeGeometry, ropeMaterial);
-
-  rope.castShadow = true;
-  rope.receiveShadow = true;
-  scene.add(rope);
-
-  // -----------------------------------------ROPE PHISICS ------------------
-  const softBodyHelpers = new Ammo.btSoftBodyHelpers();
-  const ropeStart = new Ammo.btVector3(ropePos.x, ropePos.y, ropePos.z);
-  const ropeEnd = new Ammo.btVector3(
-    ropePos.x,
-    ropePos.y + ropeLength,
-    ropePos.z
-  );
-  const ropeSoftBody = softBodyHelpers.CreateRope(
-    physicsWorld.getWorldInfo(),
-    ropeStart,
-    ropeEnd,
-    ropeNumSegments - 1,
-    0
-  );
-  const sbConfig = ropeSoftBody.get_m_cfg();
-  sbConfig.set_viterations(10);
-  sbConfig.set_piterations(10);
-  ropeSoftBody.setTotalMass(ropeMass, false);
-  Ammo.castObject(ropeSoftBody, Ammo.btCollisionObject)
-    .getCollisionShape()
-    .setMargin(margin * 3);
-  physicsWorld.addSoftBody(ropeSoftBody, 1, -1);
-  rope.userData.physicsBody = ropeSoftBody;
-  // Disable deactivation
-  ropeSoftBody.setActivationState(4);
-
   // ------------------------- BORDERS --------------------------------------
   pos.set(0, -5.5, 0);
   quat.set(0, 0, 0, 1);
@@ -389,7 +215,7 @@ async function createObjects() {
   const ground5 = createParalellepiped(
     20,
     0.1,
-    1,
+    5,
     0,
     pos,
     quat,
@@ -402,6 +228,264 @@ async function createObjects() {
   ground3.visible = false;
   ground4.visible = false;
   ground5.visible = false;
+
+  // ------------------------------------------------Model 2--------------------------
+  let m2 = await loadModel(document.querySelector(".m2_mesh").dataset.setting);
+
+  m2.scene.scale.x = 0.5;
+  m2.scene.scale.y = 0.5;
+  m2.scene.scale.z = 0.5;
+
+  m2.scene.position.set(window.innerWidth / 200, 1, -1);
+  scene.add(m2.scene);
+
+  let verticesM2 = m2.scene.children[0].geometry;
+
+  const m2Shape = createConvexShape(verticesM2);
+
+  pos.set(window.innerWidth / 200, 0, -2);
+  quat.set(0, 0, 0, 1);
+
+  createRigidBody(m2.scene, m2Shape, 1, pos, quat, false, false, true);
+
+  // // ------------------------------------------------Model 1--------------------------
+  let m1 = await loadModel(document.querySelector(".m1_mesh").dataset.setting);
+
+  m1.scene.scale.x = 0.5;
+  m1.scene.scale.y = 0.5;
+  m1.scene.scale.z = 0.5;
+
+  // ---------------------------------------------------- VARIANT 1 ---------------------------------------------
+
+  m1.scene.position.set(-window.innerWidth / 200, -2, -0.5);
+  scene.add(m1.scene);
+
+  let vertices = m1.scene.children[0].geometry;
+
+  const m1Shape = createConvexShape(vertices);
+
+  pos.set(-window.innerWidth / 200, -2, -0.5);
+  quat.set(0, 0, 0, 1);
+
+  createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
+
+  // ---------------------------------------------------- VARIANT 2 ---------------------------------------------
+  // let vertices = [];
+  // m1.scene.traverse(function (child) {
+  //   if (child.isMesh) {
+  //     let geometry = child.geometry;
+  //     geometry.computeBoundingBox(); // Обновляем ограничивающий параллелепипед для получения вершин модели
+  //     let positionAttribute = geometry.attributes.position;
+  //     for (let i = 0; i < positionAttribute.count; i++) {
+  //       let point = new Ammo.btVector3(
+  //         positionAttribute.getX(i),
+  //         positionAttribute.getY(i),
+  //         positionAttribute.getZ(i)
+  //       );
+  //       vertices.push(point);
+  //     }
+  //   }
+  // });
+
+  // let m1Shape = new Ammo.btConvexHullShape();
+  // for (let i = 0; i < vertices.length; i++) {
+  //   m1Shape.addPoint(vertices[i]);
+  // }
+
+  // pos.set(-window.innerWidth / 200, -2, -0.5);
+  // quat.set(0, 0, 0, 1);
+
+  // createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
+  // ------------------------------------------MEDAL -------------------
+  const medalMass = 25.2;
+  const medalRadius = 3.3;
+
+  medal = await loadModel(
+    document.querySelector(".ss_medal_mesh").dataset.setting
+  );
+
+  medal.castShadow = true;
+  medal.receiveShadow = true;
+  const medalShape = new Ammo.btSphereShape(medalRadius);
+  medalShape.setMargin(margin);
+  pos.set(0, 0, 0);
+  quat.set(0, 0, 0, 1);
+
+  createRigidBody(medal.scene, medalShape, medalMass, pos, quat, true);
+
+  medal.scene.scale.x = 0.635;
+  medal.scene.scale.y = 0.635;
+  medal.scene.scale.z = 0.635;
+  medal.scene.userData.physicsBody.setFriction(0.5);
+
+  // -------------------------------- HOUSE -----------------------------------------------
+
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(
+    document.querySelector(".ss_box_albedo").dataset.setting
+  );
+
+  house = await loadModel(
+    document.querySelector(".ss_box_mesh").dataset.setting
+  );
+
+  house.scene.traverse((child) => {
+    if (child.isMesh) {
+      child.material.map = texture;
+    }
+  });
+
+  const boxWidth = 7.12;
+  const diff = window.innerWidth / boxWidth;
+
+  house.scene.scale.x = diff / 50;
+  house.scene.scale.z = diff / 40;
+
+  scene.add(house.scene);
+  
+  
+  // ------------------------------------------------ROPE----------------------------------------
+  const ropeNumSegments = 10;
+  const ropeLength = 5;
+  const ropeMass = 3;
+  const ropePos = medal.scene.position.clone();
+  console.log("ropePos: ", ropePos);
+  ropePos.y += medalRadius - 2;
+
+  const segmentLength = ropeLength / ropeNumSegments;
+  const ropeGeometry = new THREE.BufferGeometry();
+  const ropeMaterial = new THREE.LineBasicMaterial({ color: 0xd8c9b8 });
+  const ropePositions = [];
+  const ropeIndices = [];
+
+  for (let i = 0; i < ropeNumSegments + 1; i++) {
+    ropePositions.push(ropePos.x, ropePos.y + i * segmentLength, ropePos.z);
+  }
+
+  for (let i = 0; i < ropeNumSegments; i++) {
+    ropeIndices.push(i, i + 1);
+  }
+
+  ropeGeometry.setIndex(
+    new THREE.BufferAttribute(new Uint16Array(ropeIndices), 1)
+  );
+  ropeGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(new Float32Array(ropePositions), 3)
+  );
+  ropeGeometry.computeBoundingSphere();
+  rope = new THREE.LineSegments(ropeGeometry, ropeMaterial);
+
+  rope.castShadow = true;
+  rope.receiveShadow = true;
+  scene.add(rope);
+
+  // -----------------------------------------ROPE PHISICS ------------------
+  const softBodyHelpers = new Ammo.btSoftBodyHelpers();
+  const ropeStart = new Ammo.btVector3(ropePos.x, ropePos.y, ropePos.z);
+  const ropeEnd = new Ammo.btVector3(
+    ropePos.x,
+    ropePos.y + ropeLength,
+    ropePos.z
+  );
+  const ropeSoftBody = softBodyHelpers.CreateRope(
+    physicsWorld.getWorldInfo(),
+    ropeStart,
+    ropeEnd,
+    ropeNumSegments - 1,
+    0
+  );
+  const sbConfig = ropeSoftBody.get_m_cfg();
+  sbConfig.set_viterations(10);
+  sbConfig.set_piterations(10);
+  ropeSoftBody.setTotalMass(ropeMass, false);
+  Ammo.castObject(ropeSoftBody, Ammo.btCollisionObject)
+    .getCollisionShape()
+    .setMargin(margin * 3);
+  physicsWorld.addSoftBody(ropeSoftBody, 1, -1);
+  rope.userData.physicsBody = ropeSoftBody;
+  // Disable deactivation
+  ropeSoftBody.setActivationState(4);
+
+  // // ------------------------- BORDERS --------------------------------------
+  // pos.set(0, -5.5, 0);
+  // quat.set(0, 0, 0, 1);
+  // const ground = createParalellepiped(
+  //   40,
+  //   0.1,
+  //   40,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // pos.set(0, 7, 0);
+  // quat.set(0, 0, 0, 1);
+  // const ground1 = createParalellepiped(
+  //   20,
+  //   0.1,
+  //   20,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // pos.set(0, 0, -7);
+  // quat.set(0.7, 0, 0, 1);
+  // const ground2 = createParalellepiped(
+  //   20,
+  //   0.1,
+  //   20,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // pos.set(-window.innerWidth / 7.12 / 11, 0, 0);
+  // quat.set(0, 0, -0.7, 1);
+  // const ground3 = createParalellepiped(
+  //   20,
+  //   0.1,
+  //   20,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // pos.set(window.innerWidth / 7.12 / 11, 0, 0);
+  // quat.set(0, 0, 0.7, 1);
+  // const ground4 = createParalellepiped(
+  //   20,
+  //   0.1,
+  //   20,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // pos.set(0, -5, 0);
+  // quat.set(0.7, 0, 0, 1);
+  // const ground5 = createParalellepiped(
+  //   20,
+  //   0.1,
+  //   1,
+  //   0,
+  //   pos,
+  //   quat,
+  //   new THREE.MeshPhongMaterial({ color: 0xffffff })
+  // );
+
+  // ground.visible = false;
+  // ground1.visible = false;
+  // ground2.visible = false;
+  // ground3.visible = false;
+  // ground4.visible = false;
+  // ground5.visible = false;
 
   // ----------------------------------UP POINT -----------------------------------
 

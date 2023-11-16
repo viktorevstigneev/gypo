@@ -474,15 +474,10 @@ function initInput() {
 
   let lastActivityTime = Date.now(); // Время последнего действия
 
-  const culculateBetaPosision = (beta) => {
-    if (Math.abs(beta) > 85 && Math.abs(beta) <= 90) {
-      return 0;
-    } else if (Math.abs(beta) > 90) {
-      return beta;
-    }
-  };
+  
 
   let initialBeta = null;
+
   window.addEventListener("deviceorientation", (event) => {
     if (initialBeta === null) {
       initialBeta = event.beta;
@@ -493,10 +488,6 @@ function initInput() {
       beta: event.beta - initialBeta,
       gamma: event.gamma,
     };
-
-    document.querySelector(
-      ".text"
-    ).textContent = `beta = ${gyroscopeData.beta}`;
 
     newAcceleration = new Ammo.btVector3(
       gyroscopeData.gamma,

@@ -156,27 +156,9 @@ async function createObjects() {
   m2.scene.position.set(window.innerWidth / 200, 1, -1);
   scene.add(m2.scene);
 
-  let verticesM2 = [];
-  m2.scene.traverse(function (child) {
-    if (child.isMesh) {
-      let geometry = child.geometry;
-      geometry.computeBoundingBox(); // Обновляем ограничивающий параллелепипед для получения вершин модели
-      let positionAttribute = geometry.attributes.position;
-      for (let i = 0; i < positionAttribute.count; i++) {
-        let point = new Ammo.btVector3(
-          positionAttribute.getX(i),
-          positionAttribute.getY(i),
-          positionAttribute.getZ(i)
-        );
-        verticesM2.push(point);
-      }
-    }
-  });
+  let verticesM2 = m2.scene.children[0].geometry;
 
-  let m2Shape = new Ammo.btConvexHullShape();
-  for (let i = 0; i < verticesM2.length; i++) {
-    m2Shape.addPoint(verticesM2[i]);
-  }
+  const m2Shape = createConvexShape(verticesM2);
 
   pos.set(window.innerWidth / 200, 0, -2);
   quat.set(0, 0, 0, 1);

@@ -1,6 +1,6 @@
-setTimeout(() => {
-  document.querySelector(".loader").style.display = "none";
-}, 3000);
+// setTimeout(() => {
+//   document.querySelector(".loader").style.display = "none";
+// }, 3000);
 
 // Graphics variables
 let container;
@@ -481,18 +481,22 @@ function initInput() {
       gamma: event.gamma,
     };
 
+    document.querySelector('.text').textContent = `beta = ${gyroscopeData.beta}`
+
     // Применение скользящего среднего
     if (Math.abs(gyroscopeData.beta) > 90) {
       // Вычисляем ускорение и применяем его к медали
-      newAcceleration = new Ammo.btVector3(
-        gyroscopeData.gamma,
-        gyroscopeData.alpha,
-        gyroscopeData.beta
-      );
 
-      averageAcceleration.op_mul(dampingFactor);
-      averageAcceleration.op_add(newAcceleration);
     }
+
+    newAcceleration = new Ammo.btVector3(
+      gyroscopeData.gamma,
+      gyroscopeData.alpha,
+      gyroscopeData.beta
+    );
+
+    averageAcceleration.op_mul(dampingFactor);
+    averageAcceleration.op_add(newAcceleration);
 
     // Ограничение максимального ускорения
     if (averageAcceleration.length() > maxAcceleration) {

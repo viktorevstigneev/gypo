@@ -9,7 +9,8 @@ body {
 
   .text {
     position: absolute;
-    font-size: 19px;
+    font-size: 26px;
+    color: black;
   }
 
   .loader {

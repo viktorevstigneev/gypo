@@ -170,18 +170,47 @@ async function createObjects() {
   m1.scene.scale.y = 0.5;
   m1.scene.scale.z = 0.5;
 
-  m1.scene.position.set(-window.innerWidth / 200, -2, -0.5);
-  scene.add(m1.scene);
+  // ---------------------------------------------------- VARIANT 1 ---------------------------------------------
 
-  let vertices = m1.scene.children[0].geometry;
+  // m1.scene.position.set(-window.innerWidth / 200, -2, -0.5);
+  // scene.add(m1.scene);
 
-  const m1Shape = createConvexShape(vertices);
+  // let vertices = m1.scene.children[0].geometry;
+
+  // const m1Shape = createConvexShape(vertices);
+
+  // pos.set(-window.innerWidth / 200, -2, -0.5);
+  // quat.set(0, 0, 0, 1);
+
+  // createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
+
+  // ---------------------------------------------------- VARIANT 2 ---------------------------------------------
+  let vertices = [];
+  m1.scene.traverse(function (child) {
+    if (child.isMesh) {
+      let geometry = child.geometry;
+      geometry.computeBoundingBox(); // Обновляем ограничивающий параллелепипед для получения вершин модели
+      let positionAttribute = geometry.attributes.position;
+      for (let i = 0; i < positionAttribute.count; i++) {
+        let point = new Ammo.btVector3(
+          positionAttribute.getX(i),
+          positionAttribute.getY(i),
+          positionAttribute.getZ(i)
+        );
+        vertices.push(point);
+      }
+    }
+  });
+
+  let m1Shape = new Ammo.btConvexHullShape();
+  for (let i = 0; i < vertices.length; i++) {
+    m1Shape.addPoint(vertices[i]);
+  }
 
   pos.set(-window.innerWidth / 200, -2, -0.5);
   quat.set(0, 0, 0, 1);
 
   createRigidBody(m1.scene, m1Shape, 1, pos, quat, false, true);
-
   // ------------------------------------------MEDAL -------------------
   const medalMass = 25.2;
   const medalRadius = 3.3;
@@ -198,11 +227,11 @@ async function createObjects() {
   quat.set(0, 0, 0, 1);
 
   createRigidBody(medal.scene, medalShape, medalMass, pos, quat, true);
+
   medal.scene.scale.x = 0.635;
   medal.scene.scale.y = 0.635;
   medal.scene.scale.z = 0.635;
   medal.scene.userData.physicsBody.setFriction(0.5);
-  console.log("medal: ", medalBody && medalBody);
 
   // -------------------------------- HOUSE -----------------------------------------------
 
@@ -227,6 +256,7 @@ async function createObjects() {
   house.scene.scale.z = diff / 40;
 
   scene.add(house.scene);
+
 
   // ------------------------------------------------ROPE----------------------------------------
   const ropeNumSegments = 10;

@@ -477,7 +477,7 @@ function initInput() {
   window.addEventListener("deviceorientation", (event) => {
     let gyroscopeData = {
       alpha: event.alpha,
-      beta: event.beta - 90,
+      beta: event.beta,
       gamma: event.gamma,
     };
 
@@ -488,6 +488,7 @@ function initInput() {
       // Вычисляем ускорение и применяем его к медали
 
     }
+    gyroscopeData.beta -=90; 
 
     newAcceleration = new Ammo.btVector3(
       gyroscopeData.gamma,

@@ -475,9 +475,11 @@ function initInput() {
   let lastActivityTime = Date.now(); // Время последнего действия
 
   window.addEventListener("deviceorientation", (event) => {
+    let tilt = event.beta;
+
     let gyroscopeData = {
       alpha: event.alpha,
-      beta: Math.abs(event.beta) > 0 && Math.abs(event.beta) < 90 ? 0 : event.beta,
+      beta: event.beta - tilt,
       gamma: event.gamma,
     };
 

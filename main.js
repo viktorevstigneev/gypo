@@ -477,18 +477,20 @@ function initInput() {
   window.addEventListener("deviceorientation", (event) => {
     let gyroscopeData = {
       alpha: event.alpha,
-      beta: event.beta,
+      beta: event.beta - 90,
       gamma: event.gamma,
     };
 
-    document.querySelector('.text').textContent = `beta = ${gyroscopeData.beta}`
+    console.log("gyroscopeData: ", gyroscopeData);
+
+    document.querySelector(
+      ".text"
+    ).textContent = `beta = ${gyroscopeData.beta}`;
 
     // Применение скользящего среднего
     if (Math.abs(gyroscopeData.beta) > 90) {
       // Вычисляем ускорение и применяем его к медали
-
     }
-    gyroscopeData.beta -=90; 
 
     newAcceleration = new Ammo.btVector3(
       gyroscopeData.gamma,

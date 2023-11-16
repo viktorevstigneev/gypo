@@ -474,25 +474,29 @@ function initInput() {
 
   let lastActivityTime = Date.now(); // Время последнего действия
 
+  const culculateBetaPosision = (beta) => {
+    if (Math.abs(beta) > 85 && Math.abs(beta) <= 90) {
+      return 0;
+    } else if (Math.abs(beta) > 90) {
+      return beta;
+    }
+  };
+
+  let initialBeta = null;
   window.addEventListener("deviceorientation", (event) => {
-    let tilt = event.beta;
+    if (initialBeta === null) {
+      initialBeta = event.beta;
+    }
 
     let gyroscopeData = {
       alpha: event.alpha,
-      beta: event.beta - tilt,
+      beta: event.beta - initialBeta,
       gamma: event.gamma,
     };
-
-    console.log("gyroscopeData: ", gyroscopeData);
 
     document.querySelector(
       ".text"
     ).textContent = `beta = ${gyroscopeData.beta}`;
-
-    // // Применение скользящего среднего
-    // if (Math.abs(gyroscopeData.beta) > 90) {
-    //   // Вычисляем ускорение и применяем его к медали
-    // }
 
     newAcceleration = new Ammo.btVector3(
       gyroscopeData.gamma,

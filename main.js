@@ -487,10 +487,10 @@ function initInput() {
       ".text"
     ).textContent = `beta = ${gyroscopeData.beta}`;
 
-    // Применение скользящего среднего
-    if (Math.abs(gyroscopeData.beta) > 90) {
-      // Вычисляем ускорение и применяем его к медали
-    }
+    // // Применение скользящего среднего
+    // if (Math.abs(gyroscopeData.beta) > 90) {
+    //   // Вычисляем ускорение и применяем его к медали
+    // }
 
     newAcceleration = new Ammo.btVector3(
       gyroscopeData.gamma,

@@ -69,6 +69,7 @@ function initGraphics() {
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
+  // renderer.physicallyCorrectLights = true;
   container.appendChild(renderer.domElement);
   //OrbitControls
   // controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -210,7 +211,7 @@ async function createObjects() {
 
   const segmentLength = ropeLength / ropeNumSegments;
   const ropeGeometry = new THREE.BufferGeometry();
-  const ropeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+  const ropeMaterial = new THREE.LineBasicMaterial({ color: 0xd8c9b8 });
   const ropePositions = [];
   const ropeIndices = [];
 
@@ -231,6 +232,7 @@ async function createObjects() {
   );
   ropeGeometry.computeBoundingSphere();
   rope = new THREE.LineSegments(ropeGeometry, ropeMaterial);
+
   rope.castShadow = true;
   rope.receiveShadow = true;
   scene.add(rope);
@@ -456,6 +458,7 @@ function createRigidBody(
 
 function initInput() {
   // Инициализация переменных для скользящего среднего
+  let newAcceleration;
   let averageAcceleration = new Ammo.btVector3(0, 0, 0);
   let maxAcceleration = +document.querySelector(".scene__maxAcceleration")
     .dataset.setting; // Максимальное ускорение, можно настроить под свои потребности
@@ -479,13 +482,17 @@ function initInput() {
     };
 
     // Применение скользящего среднего
-    var newAcceleration = new Ammo.btVector3(
-      gyroscopeData.gamma,
-      gyroscopeData.alpha,
-      gyroscopeData.beta
-    );
-    averageAcceleration.op_mul(dampingFactor);
-    averageAcceleration.op_add(newAcceleration);
+    if (Math.abs(beta) > 90) {
+      // Вычисляем ускорение и применяем его к медали
+      newAcceleration = new Ammo.btVector3(
+        gyroscopeData.gamma,
+        gyroscopeData.alpha,
+        gyroscopeData.beta
+      );
+      
+      averageAcceleration.op_mul(dampingFactor);
+      averageAcceleration.op_add(newAcceleration);
+    }
 
     // Ограничение максимального ускорения
     if (averageAcceleration.length() > maxAcceleration) {
@@ -494,8 +501,9 @@ function initInput() {
       );
     }
 
-    // Применение ускорения к медали
+    // ------------------------------------------------Применение ускорения к медали----------------------------
     var currentVelocity = medalBody?.getLinearVelocity();
+
     var newVelocity = new Ammo.btVector3(
       currentVelocity?.x() + averageAcceleration.x(),
       currentVelocity?.y(),
@@ -503,7 +511,7 @@ function initInput() {
     );
     medalBody.setLinearVelocity(newVelocity);
 
-    // Применение ускорения к м1
+    // ----------------------------------------------Применение ускорения к м1----------------------------------
     var currentVelocity1 = m1Body?.getLinearVelocity();
     var newVelocity1 = new Ammo.btVector3(
       currentVelocity1?.x() + averageAcceleration.x(),
@@ -512,7 +520,7 @@ function initInput() {
     );
     m1Body.setLinearVelocity(newVelocity1);
 
-    // Применение ускорения к м2
+    // -----------------------------------------------Применение ускорения к м2---------------------------------
     var currentVelocity2 = m2Body?.getLinearVelocity();
     var newVelocity2 = new Ammo.btVector3(
       currentVelocity2?.x() + averageAcceleration.x(),

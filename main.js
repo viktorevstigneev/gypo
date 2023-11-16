@@ -52,16 +52,12 @@ function init() {
 
 function initGraphics() {
   container = document.getElementById("container");
-  const containerWidth = container.clientWidth;
-  const containerHeight = container.clientHeight;
-  const aspect = containerWidth / containerHeight;
-  
 
   camera = new THREE.PerspectiveCamera(
-    45,
+    75,
     window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+    0.9,
+    100
   );
 
   scene = new THREE.Scene();
@@ -215,7 +211,7 @@ async function createObjects() {
   const ground5 = createParalellepiped(
     20,
     0.1,
-    5,
+    10,
     0,
     pos,
     quat,
@@ -247,6 +243,7 @@ async function createObjects() {
   quat.set(0, 0, 0, 1);
 
   createRigidBody(m2.scene, m2Shape, 1, pos, quat, false, false, true);
+
 
   // // ------------------------------------------------Model 1--------------------------
   let m1 = await loadModel(document.querySelector(".m1_mesh").dataset.setting);
@@ -337,13 +334,11 @@ async function createObjects() {
 
   const boxWidth = 7.12;
   const diff = window.innerWidth / boxWidth;
-
   house.scene.scale.x = diff / 50;
   house.scene.scale.z = diff / 40;
 
   scene.add(house.scene);
-  
-  
+
   // ------------------------------------------------ROPE----------------------------------------
   const ropeNumSegments = 10;
   const ropeLength = 5;

@@ -108,6 +108,31 @@ function initPhysics() {
 
 // ------------------------------------------------CREATE OBJECTS -----------------------------
 async function createObjects() {
+  function createConvexShape(convexGeometry) {
+    const points = [];
+
+    for (
+      let i = 0;
+      i < convexGeometry.attributes.position.array.length;
+      i += 3
+    ) {
+      points.push(
+        new Ammo.btVector3(
+          convexGeometry.attributes.position.array[i],
+          convexGeometry.attributes.position.array[i + 1],
+          convexGeometry.attributes.position.array[i + 2]
+        )
+      );
+    }
+
+    const shape = new Ammo.btConvexHullShape();
+    points.forEach((point) => {
+      shape.addPoint(point);
+    });
+
+    return shape;
+  }
+
   function loadModel(url) {
     return new Promise((resolve, reject) => {
       gltfLoader.load(url, (loadedModel) => {
@@ -148,8 +173,10 @@ async function createObjects() {
   m1.scene.position.set(-window.innerWidth / 200, -2, -0.5);
   scene.add(m1.scene);
 
-  const m1Shape = new Ammo.btSphereShape(0.5);
-  m1Shape.setMargin(margin);
+  let vertices = m1.scene.children[0].geometry;
+
+  const m1Shape = createConvexShape(vertices);
+
   pos.set(-window.innerWidth / 200, -2, -0.5);
   quat.set(0, 0, 0, 1);
 
@@ -473,8 +500,6 @@ function initInput() {
     .setting; // Порог бездействия, например, 3 секунды
 
   let lastActivityTime = Date.now(); // Время последнего действия
-
-  
 
   let initialBeta = null;
 
